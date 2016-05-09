@@ -17,4 +17,15 @@ class Cucloud::Ec2Utils
     })
   end
 
+  def stop_instances_by_tag(tag_name, tag_value)
+    get_instances_by_tag(tag_name, tag_value).each do |i|
+      i.stop
+    end
+  end
+
+  def start_instances_by_tag(tag_name, tag_value)
+    get_instances_by_tag(tag_name, tag_value).each do |i|
+      i.start
+    end
+  end
 end
