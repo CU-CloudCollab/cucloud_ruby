@@ -27,10 +27,16 @@ describe Cucloud::Ec2Utils do
       expect(Cucloud::Ec2Utils.new ec2_client).to be_a_kind_of(Cucloud::Ec2Utils)
     end
 
-    it "get_instances_by_tag should return '> 1' whee tage_name= Name, and tag_value= example-1" do
+    it "'get_instances_by_tag' should return '> 1' where tage_name= Name, and tag_value= example-1" do
       expect(ec_util.get_instances_by_tag('Name', 'example-1').to_a.size).to eq 1
     end
 
+    it "'stop_instances_by_tag' should return without an error" do
+      ec_util.stop_instances_by_tag('Name', 'example-1')
+    end
 
+    it "'start_instances_by_tag' should return without an error" do
+      ec_util.start_instances_by_tag('Name', 'example-1')
+    end
   end
 end
