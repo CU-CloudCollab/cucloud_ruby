@@ -6,6 +6,53 @@ class Cucloud::Ec2Utils
     @ec2 = Aws::EC2::Client.new
   end
 
+  def get_instance(instance)
+    ## Get instance information for a specific instance
+  end
+
+  def stop_instance(instance)
+    ## Stop ec2 instance for a specific instance number. The function will wait until the instance has entered the stopped state.
+  end
+
+  def start_instance(instance)
+    ## Start ec2 instance for a specific instance number. The function will wait until the instance has entered the running state.
+  end
+
+  def rename_instance(instance, name)
+    # Set the name of the instance that will be displayed in the ec2 console
+  end
+
+  def reboot_instance(instance)
+    ## Reboot ec2 instance for a specific instance number.
+  end
+
+  def delete_instance(instance)
+    ## Terminate ec2 instance for a specific instance number.
+  end
+
+
+  def associate_eip(instance, allocation_id)
+    ## Assoications an Elastic IP adress with a specific instance number.
+
+    ## Return: association_id as a string in the form of eipassoc-569cd631. This is the link between between the elastic network interface and the elastic IP address.
+  end
+
+  def create_instance(options)
+
+    ## Create ec2 instance based on parameters provided. The function will pull in default information from ?????.
+    ## Options will be hash that will override the default
+    ## Default will need to be pulled from ... ??
+
+  end
+
+  def deregister_image(image)
+    # Remove private AMI
+  end
+
+  def find_ami(name)
+    # Find ami based on a search of Name
+  end
+
   def get_instances_by_tag(tag_name, tag_value)
     @ec2.describe_instances({
       filters: [
