@@ -2,12 +2,14 @@ class Cucloud::Ec2Utils
   MAX_TIMEOUT = 480
   SECONDS_IN_A_DAY = 86400
 
-  def initialize
-    @ec2 = Aws::EC2::Client.new
+  def initialize(ec2_client=Aws::EC2::Client.new)
+    ## DI for testing purposes
+    @ec2 = ec2_client
   end
 
   def get_instance(instance)
     ## Get instance information for a specific instance
+
   end
 
   def stop_instance(instance)
@@ -24,12 +26,12 @@ class Cucloud::Ec2Utils
 
   def reboot_instance(instance)
     ## Reboot ec2 instance for a specific instance number.
+
   end
 
   def delete_instance(instance)
     ## Terminate ec2 instance for a specific instance number.
   end
-
 
   def associate_eip(instance, allocation_id)
     ## Assoications an Elastic IP adress with a specific instance number.
@@ -54,6 +56,7 @@ class Cucloud::Ec2Utils
   end
 
   def get_instances_by_tag(tag_name, tag_value)
+    ## Based on tag name and value, return instances
     @ec2.describe_instances({
       filters: [
         {
