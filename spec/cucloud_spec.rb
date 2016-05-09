@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Cucloud do
-  it "example of how to setup stubbing for S3 should pass" do
+  it "is an example of how to setup stubbing for S3 and should pass" do
 
     dummy_value = 'cu-awesome'
 

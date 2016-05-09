@@ -1,5 +1,5 @@
 require 'spec_helper'
 
-describe Cucloud::Ec2Utils do
+describe Cucloud::Ec2Utils do  
 
 end
