@@ -1,5 +1,9 @@
 require 'spec_helper'
 
+## Written by Scott Ross
+## Unit testing ec2_utils
+## Spring 2016
+
 describe Cucloud::Ec2Utils do
   let(:ec2_client) {
     Aws::EC2::Client.new(stub_responses: true)
@@ -39,7 +43,7 @@ describe Cucloud::Ec2Utils do
       expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
     end
 
-    it "should get instance information and the instance id should eq i-1" do
+    it "should 'get_instance' and the instance id should eq i-1" do
       expect(ec_util.get_instance('i-1').reservations[0].instances[0].instance_id.to_s).to eq 'i-1'
     end
 
