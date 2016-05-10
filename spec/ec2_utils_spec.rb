@@ -13,7 +13,7 @@ describe Cucloud::Ec2Utils do
     Cucloud::Ec2Utils.new ec2_client
   }
 
-  context "when describe_instances is stubbed to return a single instance" do
+  context "while ec2 is stubbed out" do
     before do
       ec2_client.stub_responses(
         :describe_instances, {
@@ -36,15 +36,27 @@ describe Cucloud::Ec2Utils do
     end
 
     it "'stop_instances_by_tag' should return without an error" do
-      expect{ec_util.stop_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
+      expect{ec_util.stop_instances_by_tag('Name', ['example-1'])}.not_to raise_error
     end
 
     it "'start_instances_by_tag' should return without an error" do
-      expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
+      expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.not_to raise_error
     end
 
     it "should 'get_instance' and the instance id should eq i-1" do
       expect(ec_util.get_instance('i-1').reservations[0].instances[0].instance_id.to_s).to eq 'i-1'
+    end
+
+    it "should 'start_instance' without an error" do
+      expect{ec_util.start_instance('i-1')}.not_to raise_error
+    end
+
+    it "should 'stop_instance' without an error" do
+      expect{ec_util.stop_instance('i-1')}.not_to raise_error
+    end
+
+    it "should 'reboot_instance' without an error" do
+      expect{ec_util.reboot_instance('i-1')}.not_to raise_error
     end
 
   end

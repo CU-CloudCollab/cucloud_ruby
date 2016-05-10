@@ -16,10 +16,12 @@ class Cucloud::Ec2Utils
 
   def stop_instance(instance)
     ## Stop ec2 instance for a specific instance number. The function will wait until the instance has entered the stopped state.
+    @ec2.stop_instances(instance_ids: [instance])
   end
 
   def start_instance(instance)
     ## Start ec2 instance for a specific instance number. The function will wait until the instance has entered the running state.
+    @ec2.start_instances(instance_ids: [instance])
   end
 
   def rename_instance(instance, name)
@@ -28,6 +30,7 @@ class Cucloud::Ec2Utils
 
   def reboot_instance(instance)
     ## Reboot ec2 instance for a specific instance number.
+    @ec2.start_instances(instance_ids: [instance])
   end
 
   def delete_instance(instance)
