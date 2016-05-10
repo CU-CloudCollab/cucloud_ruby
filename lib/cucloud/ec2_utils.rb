@@ -1,7 +1,6 @@
 class Cucloud::Ec2Utils
   MAX_TIMEOUT = 480
   SECONDS_IN_A_DAY = 86400
-
   UBUNTU_PATCH_COMMAND = "apt-get update; apt-get -y upgrade; reboot"
   AMAZON_PATCH_COMMAND = "yum update -y; reboot & disown "
 
@@ -31,8 +30,10 @@ class Cucloud::Ec2Utils
     # Set the name of the instance that will be displayed in the ec2 console
   end
 
-  def reboot_instance(instance)UBUNTU_PATCH_COMMAND = "apt-get update; apt-get -y upgrade; reboot"
-AMAZON_PATCH_COMMAND = "yum update -y; reboot & disown "
+  def reboot_instance(instance)
+
+  end
+
   def delete_instance(instance)
     ## Terminate ec2 instance for a specific instance number.
   end
@@ -98,7 +99,7 @@ AMAZON_PATCH_COMMAND = "yum update -y; reboot & disown "
     puts resp.inspect
   end
 
-  def instances_to_patch(tag_name="auto_patch", tag_value="1")
+  def instances_to_patch_by_tag(tag_name="auto_patch", tag_value="1")
     resp = get_instances_by_tag(tag_name, tag_value)
 
     ubuntu_patch_instances = []
