@@ -28,16 +28,15 @@ describe Cucloud::Ec2Utils do
     end
 
     it "'get_instances_by_tag' should return '> 1' where tage_name= Name, and tag_value= example-1" do
-      expect(ec_util.get_instances_by_tag('Name', 'example-1').to_a.size).to eq 1
+      expect(ec_util.get_instances_by_tag('Name', ['example-1']).to_a.size).to eq 1
     end
 
     it "'stop_instances_by_tag' should return without an error" do
-
-      #ec_util.stop_instances_by_tag('Name', 'example-1')
+      expect{ec_util.stop_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
     end
 
     it "'start_instances_by_tag' should return without an error" do
-      #ec_util.start_instances_by_tag('Name', 'example-1')
+      expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
     end
   end
 end

@@ -61,21 +61,21 @@ class Cucloud::Ec2Utils
       filters: [
         {
           name: "tag:#{tag_name}",
-          values: [tag_value],
+          values: tag_value,
         }
       ]
     })
   end
 
   def stop_instances_by_tag(tag_name, tag_value)
-    get_instances_by_tag(tag_name, tag_value).each do |i|
-      i.stop
+    get_instances_by_tag(tag_name, tag_value).reservations[0].instances.each do |i|
+      @ec2.stop_instances(instance_ids: [i.instance_id])
     end
   end
 
   def start_instances_by_tag(tag_name, tag_value)
-    get_instances_by_tag(tag_name, tag_value).each do |i|
-      i.start
+    get_instances_by_tag(tag_name, tag_value).reservations[0].instances.each do |i|
+      @ec2.start_instances(instance_ids: [i.instance_id])
     end
   end
 end
