@@ -10,6 +10,10 @@ class Cucloud::Ec2Utils
   def get_instance(instance)
     ## Get instance information for a specific instance
 
+    @ec2.describe_instances({
+      instance_ids: [instance]
+      })
+
   end
 
   def stop_instance(instance)

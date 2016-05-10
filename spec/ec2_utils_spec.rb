@@ -38,5 +38,10 @@ describe Cucloud::Ec2Utils do
     it "'start_instances_by_tag' should return without an error" do
       expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.to_not raise_error(NameError)
     end
+
+    it "should get instance information and the instance id should eq i-1" do
+      expect(ec_util.get_instance('i-1').reservations[0].instances[0].instance_id.to_s).to eq 'i-1'
+    end
+
   end
 end
