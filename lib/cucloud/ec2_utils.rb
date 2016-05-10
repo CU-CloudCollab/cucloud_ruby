@@ -98,7 +98,7 @@ class Cucloud::Ec2Utils
     })
   end
 
-  def instances_to_patch_by_tag(tag_name="auto_patch", tag_value="1")
+  def instances_to_patch_by_tag(tag_name="auto_patch", tag_value=["1"])
     resp = get_instances_by_tag(tag_name, tag_value)
 
     ubuntu_patch_instances = []

@@ -59,5 +59,9 @@ describe Cucloud::Ec2Utils do
       expect{ec_util.reboot_instance('i-1')}.not_to raise_error
     end
 
+    it "should 'instances_to_patch_by_tag' without an error" do
+      expect{ec_util.instances_to_patch_by_tag()}.not_to raise_error
+    end
+
   end
 end
