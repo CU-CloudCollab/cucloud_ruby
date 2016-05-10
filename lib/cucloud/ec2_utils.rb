@@ -96,7 +96,6 @@ class Cucloud::Ec2Utils
         "commands" => [command],
       }
     })
-    puts resp.inspect
   end
 
   def instances_to_patch_by_tag(tag_name="auto_patch", tag_value="1")
