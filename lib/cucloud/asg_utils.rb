@@ -35,8 +35,8 @@ module Cucloud
     # @param new_ami_id [String] Id of AMI that should be added to the new configuration
     # @param new_launch_config_name [String] Name of new launch configuration (must be unique in AWS account)
     # @return [Hash] Options hash to be submitted via AWS SDK
-    def generate_request_hash_with_new_ami(launch_config, new_ami_id,
-                                           new_launch_config_name = "cucloud-lc-#{UUID.new.generate}")
+    def generate_lc_options_hash_with_ami(launch_config, new_ami_id,
+                                          new_launch_config_name = "cucloud-lc-#{UUID.new.generate}")
 
       # make sure we got a valid launch config
       raise 'Not a launch configuration struct' unless launch_config.is_a? Aws::AutoScaling::Types::LaunchConfiguration
