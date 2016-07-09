@@ -123,6 +123,52 @@ describe Cucloud::AsgUtils do
       expect(asg_util.get_launch_config_by_name('test-lc').class.to_s)
         .to eq 'Aws::AutoScaling::Types::LaunchConfiguration'
     end
+
+    it "'generate_request_hash_with_new_ami' should return without an error" do
+      expect do
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami'
+        )
+      end.not_to raise_error
+    end
+
+    it "'generate_request_hash_with_new_ami' should return hash with new ami" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami'
+        )[:image_id]
+      ).to eq 'new-ami'
+    end
+
+    it "'generate_request_hash_with_new_ami' should not include a launch config arn" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami'
+        )[:launch_configuration_arn].nil?
+      ).to eq true
+    end
+
+    it "'generate_request_hash_with_new_ami', with default param, should generate a new launch configuration name" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami'
+        )[:launch_configuration_name] == asg_util.get_launch_config_by_name('test-lc').launch_configuration_name
+      ).to eq false
+    end
+
+    it "'generate_request_hash_with_new_ami', should use requested config name when specified" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami',
+          'new-specified-config-name'
+        )[:launch_configuration_name] == 'new-specified-config-name'
+      ).to eq true
+    end
   end
 
   context 'while launch configuration is stubbed without matching result' do

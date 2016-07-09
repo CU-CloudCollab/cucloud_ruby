@@ -1,6 +1,8 @@
 module Cucloud
-  # AsgUtils - Utilities for autoscaling groups
+  # AsgUtils - Utilities for AutoScaling groups
   class AsgUtils
+    require 'UUID'
+
     # Constructor for AsgUtils class
     # @param asg_client [Aws::AutoScaling::Client] AWS AutoScaling SDK Client
     def initialize(asg_client = Aws::AutoScaling::Client.new)
@@ -26,6 +28,26 @@ module Cucloud
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#describe_launch_configurations-instance_method
       lc_desc = @asg.describe_launch_configurations(launch_configuration_names: [launch_config_name])
       lc_desc.launch_configurations[0]
+    end
+
+    # Generate a hash that can be submitted when creating a new launch config - replace image with desired AMI
+    # @param launch_config [Aws::AutoScaling::Types::LaunchConfiguration] Existing launch configuration
+    # @param new_ami_id [String] Id of AMI that should be added to the new configuration
+    # @param new_launch_config_name [String] Name of new launch configuration (must be unique in AWS account)
+    # @return [Hash] Options hash to be submitted via AWS SDK
+    def generate_request_hash_with_new_ami(launch_config, new_ami_id,
+                                           new_launch_config_name = "cucloud-lc-#{UUID.new.generate}")
+
+      # make sure we got a valid launch config
+      raise 'Not a launch configuration struct' unless launch_config.is_a? Aws::AutoScaling::Types::LaunchConfiguration
+
+      # convert to hash (required for aws sdk) and update necessary values
+      config_hash = launch_config.to_h
+      config_hash[:launch_configuration_name] = new_launch_config_name
+      config_hash[:image_id] = new_ami_id
+
+      # return hash without old arn (arn can't be submitted in request)
+      config_hash.tap { |h| h.delete(:launch_configuration_arn) }
     end
   end
 end
