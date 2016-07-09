@@ -56,5 +56,11 @@ module Cucloud
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#create_launch_configuration-instance_method
       @asg.create_launch_configuration(options)
     end
+
+    def update_asg_launch_configuration(asg_name, launch_config_name)
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#update_auto_scaling_group-instance_method
+      @asg.update_auto_scaling_group(auto_scaling_group_name: asg_name,
+                                     launch_configuration_name: launch_config_name)
+    end
   end
 end

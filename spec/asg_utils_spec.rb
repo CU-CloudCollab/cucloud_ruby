@@ -110,8 +110,14 @@ describe Cucloud::AsgUtils do
         }]
       )
 
+      # empty response per spec
       asg_client.stub_responses(
         :create_launch_configuration
+      )
+
+      # empty response per spec
+      asg_client.stub_responses(
+        :update_auto_scaling_group
       )
     end
 
@@ -214,6 +220,16 @@ describe Cucloud::AsgUtils do
             'new-specified-config-name'
           )
         ).class.to_s
+      ).to eq 'Seahorse::Client::Response'
+    end
+
+    it "'update_asg_launch_configuration', should return without an error" do
+      expect { asg_util.update_asg_launch_configuration('asg-name', 'launch-config-name') }.not_to raise_error
+    end
+
+    it "'update_asg_launch_configuration' should return type Seahorse::Client::Response" do
+      expect(
+        asg_util.update_asg_launch_configuration('asg-name', 'launch-config-name').class.to_s
       ).to eq 'Seahorse::Client::Response'
     end
   end
