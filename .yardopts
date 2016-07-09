@@ -1,0 +1,4 @@
+--readme README.md
+--title 'CUCloud Ruby Library'
+--markup markdown
+'lib/**/*.rb' - '*.md'
