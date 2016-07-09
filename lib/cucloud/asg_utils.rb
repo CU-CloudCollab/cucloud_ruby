@@ -52,12 +52,17 @@ module Cucloud
 
     # Create new launch configuration in AWS
     # @param options [Hash] Options hash to be passed along in request
+    # @return [Seahorse::Client::Response] Empty Seahorse Client Response
     def create_launch_configuration(options)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#create_launch_configuration-instance_method
       @asg.create_launch_configuration(options)
     end
 
-    def update_asg_launch_configuration(asg_name, launch_config_name)
+    # Update autoscale group launch configuration
+    # @param asg_name [String] AutoScale group name
+    # @param launch_config_name [String] Launch configuration name
+    # @return [Seahorse::Client::Response] Empty Seahorse Client Response
+    def update_asg_launch_configuration!(asg_name, launch_config_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#update_auto_scaling_group-instance_method
       @asg.update_auto_scaling_group(auto_scaling_group_name: asg_name,
                                      launch_configuration_name: launch_config_name)

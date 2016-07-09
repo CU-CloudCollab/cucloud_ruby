@@ -223,13 +223,13 @@ describe Cucloud::AsgUtils do
       ).to eq 'Seahorse::Client::Response'
     end
 
-    it "'update_asg_launch_configuration', should return without an error" do
-      expect { asg_util.update_asg_launch_configuration('asg-name', 'launch-config-name') }.not_to raise_error
+    it "'update_asg_launch_configuration!', should return without an error" do
+      expect { asg_util.update_asg_launch_configuration!('asg-name', 'launch-config-name') }.not_to raise_error
     end
 
-    it "'update_asg_launch_configuration' should return type Seahorse::Client::Response" do
+    it "'update_asg_launch_configuration!' should return type Seahorse::Client::Response" do
       expect(
-        asg_util.update_asg_launch_configuration('asg-name', 'launch-config-name').class.to_s
+        asg_util.update_asg_launch_configuration!('asg-name', 'launch-config-name').class.to_s
       ).to eq 'Seahorse::Client::Response'
     end
   end
