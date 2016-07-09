@@ -121,23 +121,23 @@ describe Cucloud::AsgUtils do
       )
     end
 
-    it "'get_launch_config_by_name' should return without an error" do
-      expect { asg_util.get_launch_config_by_name('test-lc') }.not_to raise_error
+    it "'get_launch_configuration_by_name' should return without an error" do
+      expect { asg_util.get_launch_configuration_by_name('test-lc') }.not_to raise_error
     end
 
-    it "'get_launch_config_by_name' should return first result" do
-      expect(asg_util.get_launch_config_by_name('test-lc').launch_configuration_name.to_s).to eq 'test-lc'
+    it "'get_launch_configuration_by_name' should return first result" do
+      expect(asg_util.get_launch_configuration_by_name('test-lc').launch_configuration_name.to_s).to eq 'test-lc'
     end
 
-    it "'get_launch_config_by_name' should return type Aws::AutoScaling::Types::LaunchConfiguration" do
-      expect(asg_util.get_launch_config_by_name('test-lc').class.to_s)
+    it "'get_launch_configuration_by_name' should return type Aws::AutoScaling::Types::LaunchConfiguration" do
+      expect(asg_util.get_launch_configuration_by_name('test-lc').class.to_s)
         .to eq 'Aws::AutoScaling::Types::LaunchConfiguration'
     end
 
     it "'generate_lc_options_hash_with_ami' should return without an error" do
       expect do
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami'
         )
       end.not_to raise_error
@@ -146,7 +146,7 @@ describe Cucloud::AsgUtils do
     it "'generate_lc_options_hash_with_ami' should return hash with new ami" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami'
         )[:image_id]
       ).to eq 'new-ami'
@@ -155,7 +155,7 @@ describe Cucloud::AsgUtils do
     it "'generate_lc_options_hash_with_ami' should not include a launch config arn" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami'
         )[:launch_configuration_arn].nil?
       ).to eq true
@@ -164,7 +164,7 @@ describe Cucloud::AsgUtils do
     it "'generate_lc_options_hash_with_ami' should not include a created_time" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami'
         )[:created_time].nil?
       ).to eq true
@@ -173,16 +173,16 @@ describe Cucloud::AsgUtils do
     it "'generate_lc_options_hash_with_ami', with default param, should generate a new launch configuration name" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami'
-        )[:launch_configuration_name] == asg_util.get_launch_config_by_name('test-lc').launch_configuration_name
+        )[:launch_configuration_name] == asg_util.get_launch_configuration_by_name('test-lc').launch_configuration_name
       ).to eq false
     end
 
     it "'generate_lc_options_hash_with_ami', should use requested config name when specified" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami',
           'new-specified-config-name'
         )[:launch_configuration_name] == 'new-specified-config-name'
@@ -192,7 +192,7 @@ describe Cucloud::AsgUtils do
     it "'generate_lc_options_hash_with_ami', should not include any empty string values" do
       expect(
         asg_util.generate_lc_options_hash_with_ami(
-          asg_util.get_launch_config_by_name('test-lc'),
+          asg_util.get_launch_configuration_by_name('test-lc'),
           'new-ami',
           'new-specified-config-name'
         ).select { |_k, v| v == '' }.empty?
@@ -203,7 +203,7 @@ describe Cucloud::AsgUtils do
       expect do
         asg_util.create_launch_configuration(
           asg_util.generate_lc_options_hash_with_ami(
-            asg_util.get_launch_config_by_name('test-lc'),
+            asg_util.get_launch_configuration_by_name('test-lc'),
             'new-ami',
             'new-specified-config-name'
           )
@@ -215,7 +215,7 @@ describe Cucloud::AsgUtils do
       expect(
         asg_util.create_launch_configuration(
           asg_util.generate_lc_options_hash_with_ami(
-            asg_util.get_launch_config_by_name('test-lc'),
+            asg_util.get_launch_configuration_by_name('test-lc'),
             'new-ami',
             'new-specified-config-name'
           )
@@ -243,12 +243,12 @@ describe Cucloud::AsgUtils do
       )
     end
 
-    it "'get_launch_config_by_name' should return without an error" do
-      expect { asg_util.get_launch_config_by_name('test-lc') }.not_to raise_error
+    it "'get_launch_configuration_by_name' should return without an error" do
+      expect { asg_util.get_launch_configuration_by_name('test-lc') }.not_to raise_error
     end
 
-    it "'get_launch_config_by_name' should return nil" do
-      expect(asg_util.get_launch_config_by_name('test-lc').nil?).to eq true
+    it "'get_launch_configuration_by_name' should return nil" do
+      expect(asg_util.get_launch_configuration_by_name('test-lc').nil?).to eq true
     end
   end
 end

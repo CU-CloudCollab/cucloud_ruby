@@ -24,7 +24,7 @@ module Cucloud
     # get an instance of the launch configuration for a given autoscaling group
     # @param launch_config_name [String] Name of launch configuration (from ASG)
     # @return [Aws::AutoScaling::Types::LaunchConfiguration] AWS SDK Launch Configuration struct
-    def get_launch_config_by_name(launch_config_name)
+    def get_launch_configuration_by_name(launch_config_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#describe_launch_configurations-instance_method
       lc_desc = @asg.describe_launch_configurations(launch_configuration_names: [launch_config_name])
       lc_desc.launch_configurations[0]
