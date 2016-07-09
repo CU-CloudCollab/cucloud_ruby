@@ -83,7 +83,7 @@ describe Cucloud::AsgUtils do
           classic_link_vpc_security_groups: ['classic-link-sg-1', 'classic-link-sg-2'],
           user_data: 'blob of user data text',
           instance_type: 't2.micro',
-          kernel_id: 'test-kernel-id',
+          kernel_id: '',
           ramdisk_id: 'test-ramdisk-id',
           block_device_mappings: [
             {
@@ -94,7 +94,7 @@ describe Cucloud::AsgUtils do
                 volume_size: 1000,
                 volume_type: 'ebs-volume-type',
                 delete_on_termination: true,
-                iops: 1000,
+                iops: nil,
                 encrypted: true
               },
               no_device: false
@@ -108,6 +108,10 @@ describe Cucloud::AsgUtils do
           associate_public_ip_address: false,
           placement_tenancy: 'placement tenancy'
         }]
+      )
+
+      asg_client.stub_responses(
+        :create_launch_configuration
       )
     end
 
@@ -151,6 +155,15 @@ describe Cucloud::AsgUtils do
       ).to eq true
     end
 
+    it "'generate_request_hash_with_new_ami' should not include a created_time" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami'
+        )[:created_time].nil?
+      ).to eq true
+    end
+
     it "'generate_request_hash_with_new_ami', with default param, should generate a new launch configuration name" do
       expect(
         asg_util.generate_request_hash_with_new_ami(
@@ -168,6 +181,40 @@ describe Cucloud::AsgUtils do
           'new-specified-config-name'
         )[:launch_configuration_name] == 'new-specified-config-name'
       ).to eq true
+    end
+
+    it "'generate_request_hash_with_new_ami', should not include any empty string values" do
+      expect(
+        asg_util.generate_request_hash_with_new_ami(
+          asg_util.get_launch_config_by_name('test-lc'),
+          'new-ami',
+          'new-specified-config-name'
+        ).select { |_k, v| v == '' }.empty?
+      ).to eq true
+    end
+
+    it "'create_launch_configuration', should return without an error" do
+      expect do
+        asg_util.create_launch_configuration(
+          asg_util.generate_request_hash_with_new_ami(
+            asg_util.get_launch_config_by_name('test-lc'),
+            'new-ami',
+            'new-specified-config-name'
+          )
+        )
+      end.not_to raise_error
+    end
+
+    it "'create_launch_configuration' should return type Seahorse::Client::Response" do
+      expect(
+        asg_util.create_launch_configuration(
+          asg_util.generate_request_hash_with_new_ami(
+            asg_util.get_launch_config_by_name('test-lc'),
+            'new-ami',
+            'new-specified-config-name'
+          )
+        ).class.to_s
+      ).to eq 'Seahorse::Client::Response'
     end
   end
 

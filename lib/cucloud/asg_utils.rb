@@ -46,8 +46,15 @@ module Cucloud
       config_hash[:launch_configuration_name] = new_launch_config_name
       config_hash[:image_id] = new_ami_id
 
-      # return hash without old arn (arn can't be submitted in request)
-      config_hash.tap { |h| h.delete(:launch_configuration_arn) }
+      # request cannot have arn, created_time or keys with empty values
+      config_hash.delete_if { |key, value| key == :launch_configuration_arn || key == :created_time || value == '' }
+    end
+
+    # Create new launch configuration in AWS
+    # @param options [Hash] Options hash to be passed along in request
+    def create_launch_configuration(options)
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#create_launch_configuration-instance_method
+      @asg.create_launch_configuration(options)
     end
   end
 end
