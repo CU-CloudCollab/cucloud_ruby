@@ -43,6 +43,13 @@ puts asg.launch_configuration_name
 
 Note - the cucloud library assumes that environment credentials are available to the AWS SDK.  See https://blogs.aws.amazon.com/security/post/Tx3D6U6WSFGOK2H/A-New-and-Standardized-Way-to-Manage-Credentials-in-the-AWS-SDKs for more info.
 
+## Example Utility Implementations
+
+Utilities that use this API:
+
+* Autoscale AMI Updater: https://github.com/CU-CloudCollab/asg-ami-update
+
+
 ## Development
 
 After checking out the repo, run `bin/setup` to install dependencies.
