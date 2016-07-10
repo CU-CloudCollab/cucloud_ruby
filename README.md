@@ -65,11 +65,12 @@ It's helpful to reference a local copy of the gem while developing (so you can a
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/CU-CloudCollab/cucloud_ruby. The library includes functions that have been needed somewhere already - it is in no way complete yet and we love contributions!
 
-This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
 General guidance for contributions:
 
 * cucloud is intended to be an API consumed by other applications - in general, any user input/output/interaction should be pushed to utilities that consume this library.
 * Pull requests should include code and passing rspec unit tests for any new methods.
 * Methods and classes should be documented in the YARD format (http://yardoc.org/).
 * Code should conform to Ruby Community Styleguide and pass rubocop checks using the included rubocop config (https://github.com/bbatsov/ruby-style-guide).
+
+This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
+
