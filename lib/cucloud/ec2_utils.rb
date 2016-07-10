@@ -94,6 +94,9 @@ module Cucloud
                        })
     end
 
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # rubocop:disable Metrics/PerceivedComplexity
+    # @todo consider refactoring/breaking out functionality so that complexity metrics pass
     def instances_to_patch_by_tag(tag_name = 'auto_patch', tag_value = ['1'])
       resp = get_instances_by_tag(tag_name, tag_value)
 
