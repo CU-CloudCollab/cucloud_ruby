@@ -1,7 +1,7 @@
 module Cucloud
   # AsgUtils - Utilities for AutoScaling groups
   class AsgUtils
-    require 'UUID'
+    require 'uuid'
 
     # Constructor for AsgUtils class
     # @param asg_client [Aws::AutoScaling::Client] AWS AutoScaling SDK Client
