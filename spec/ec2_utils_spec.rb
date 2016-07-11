@@ -5,30 +5,37 @@ require 'spec_helper'
 ## Spring 2016
 
 describe Cucloud::Ec2Utils do
-  let(:ec2_client) {
+  let(:ec2_client) do
     Aws::EC2::Client.new(stub_responses: true)
-  }
+  end
 
-  let(:ec_util){
+  let(:ec_util) do
     Cucloud::Ec2Utils.new ec2_client
-  }
+  end
 
-  context "while ec2 is stubbed out" do
+  context 'while ec2 is stubbed out' do
     before do
       ec2_client.stub_responses(
-        :describe_instances, {
-          :next_token => nil,
-          :reservations => [{:instances=>[{:instance_id => "i-1", :state => {:name => "running"}, :tags =>[{:key => "Name", :value => "example-1" }]}]}]
-        }
+        :describe_instances,
+        next_token: nil,
+        reservations: [{
+          instances: [
+            { instance_id: 'i-1',
+              state: { name: 'running' },
+              tags: [
+                { key: 'Name', value: 'example-1' }
+              ] }
+          ]
+        }]
       )
     end
 
-    it ".new default optional should be successful" do
+    it '.new default optional should be successful' do
       expect(Cucloud::Ec2Utils.new).to be_a_kind_of(Cucloud::Ec2Utils)
     end
 
-    it "dependency injectin ec2_client should be successful" do
-      expect(Cucloud::Ec2Utils.new ec2_client).to be_a_kind_of(Cucloud::Ec2Utils)
+    it 'dependency injectin ec2_client should be successful' do
+      expect(Cucloud::Ec2Utils.new(ec2_client)).to be_a_kind_of(Cucloud::Ec2Utils)
     end
 
     it "'get_instances_by_tag' should return '> 1' where tage_name= Name, and tag_value= example-1" do
@@ -36,11 +43,11 @@ describe Cucloud::Ec2Utils do
     end
 
     it "'stop_instances_by_tag' should return without an error" do
-      expect{ec_util.stop_instances_by_tag('Name', ['example-1'])}.not_to raise_error
+      expect { ec_util.stop_instances_by_tag('Name', ['example-1']) }.not_to raise_error
     end
 
     it "'start_instances_by_tag' should return without an error" do
-      expect{ec_util.start_instances_by_tag('Name', ['example-1'])}.not_to raise_error
+      expect { ec_util.start_instances_by_tag('Name', ['example-1']) }.not_to raise_error
     end
 
     it "should 'get_instance' and the instance id should eq i-1" do
@@ -48,20 +55,19 @@ describe Cucloud::Ec2Utils do
     end
 
     it "should 'start_instance' without an error" do
-      expect{ec_util.start_instance('i-1')}.not_to raise_error
+      expect { ec_util.start_instance('i-1') }.not_to raise_error
     end
 
     it "should 'stop_instance' without an error" do
-      expect{ec_util.stop_instance('i-1')}.not_to raise_error
+      expect { ec_util.stop_instance('i-1') }.not_to raise_error
     end
 
     it "should 'reboot_instance' without an error" do
-      expect{ec_util.reboot_instance('i-1')}.not_to raise_error
+      expect { ec_util.reboot_instance('i-1') }.not_to raise_error
     end
 
     it "should 'instances_to_patch_by_tag' without an error" do
-      expect{ec_util.instances_to_patch_by_tag()}.not_to raise_error
+      expect { ec_util.instances_to_patch_by_tag }.not_to raise_error
     end
-
   end
 end
