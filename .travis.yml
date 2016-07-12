@@ -1,8 +1,15 @@
 language: ruby
 rvm:
-  - 2.1.2
+- 2.1.2
 before_install: gem install bundler -v 1.11.2
-
 script:
-  - bundle exec rake spec
-  - bundle exec rubocop
+- bundle exec rake spec
+- bundle exec rubocop
+deploy:
+  provider: rubygems
+  api_key:
+    secure: quX8eTwtDAOjeKfT3u70OSlLZcCDFRvlT5Alb/wKhf8lmCZPLeOo+DvoCqoTPE3PglVl8mwmdtEFhFIfbKmZ4Xjl+QqIZy+GAQpp2KLvXYotENZR3NyQGnwmQq3OE8MBLM6+OiteIaKPXy2GlbAQSHbuMSpa9BLnyNiFNoN57YW1b/Ni1sts8qGfNxPzueK6RqXg97Z/TRwDPm/e4Z/R7KVt93w/WdRBU1x/UvBHMN6/A3LqaFoImE8xNyukYSK5XLRn+m43plF2EzeQUPCOgiyvTOk+6LczkdBwP9qV+PNEIT96IXb9+olM/0jlmlLKoZ/d4VaLQNmnlGR0dWRcRvAjHtucXV5/IFyPetKhbrjmhh9t0FwxqG6l9cpo5bJgJh7GeAqdFtP1easM+QxYm9ChxKAuHopIGTyv3vUjBspv8LibAKjlHDofA+mrXFAMsmHEj0QCYIMYXyjDR6fOtTwuqkyPHQe2Kx0sxNA1ygrXURToous97rE0dw1yaBjjo+2vUDcXZa/ViFaJM4in51hNd5JZV6NXaaTUkL6m7bCMb/yxhbo1JJDKJt+Dxq1ISWElDcM1PChXl/mbPm8FHChJNXNNJBXyAXY91XeewTOIn1N5TSTyH9GjmgEDbygW3W0TTbLWgIzdtyVTPafQw/RrDttW0rWkSKnRPthCFDk=
+  gem: cucloud
+  on:
+    tags: true
+    repo: CU-CloudCollab/cucloud_ruby
