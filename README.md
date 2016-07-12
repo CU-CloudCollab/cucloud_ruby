@@ -1,6 +1,6 @@
-# Cucloud
+# Cucloud ![Build Status](https://api.travis-ci.org/CU-CloudCollab/cucloud_ruby.svg)
 
-The cucloud module is intended to serve as a lightweight wrapper around the AWS SDK that can be used to share common functionality across various AWS utilities and tools that we develop at Cornell. Goals:
+The cucloud module is intended to serve as a lightweight wrapper around the AWS SDK that can be used to share common functionality across various AWS utilities and tools that we develop at Cornell.  Goals:
 
 * Standardize credential management and client instantiation so that all of our utilities use the same approach
 * Encapsulate the work of building json/hash requests and parsing responses, to provide a simple/consistent API through which our utilities interact with AWS
