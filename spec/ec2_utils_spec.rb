@@ -9,8 +9,16 @@ describe Cucloud::Ec2Utils do
     Aws::EC2::Client.new(stub_responses: true)
   end
 
+  let(:ssm_client) do
+    Aws::SSM::Client.new(stub_responses: true)
+  end
+
+  let(:ssm_utils) do
+    Cucloud::SSMUtils.new ssm_client
+  end
+
   let(:ec_util) do
-    Cucloud::Ec2Utils.new ec2_client
+    Cucloud::Ec2Utils.new ec2_client, ssm_utils
   end
 
   context 'while ec2 is stubbed out' do
@@ -66,8 +74,60 @@ describe Cucloud::Ec2Utils do
       expect { ec_util.reboot_instance('i-1') }.not_to raise_error
     end
 
-    it "should 'instances_to_patch_by_tag' without an error" do
-      expect { ec_util.instances_to_patch_by_tag }.not_to raise_error
+    describe '#instances_to_patch_by_tag' do
+      it 'should run without an error with no valid targets' do
+        expect { ec_util.instances_to_patch_by_tag }.not_to raise_error
+      end
+
+      it 'should send the patch commands for ubuntu' do
+        ec2_client.stub_responses(
+          :describe_instances,
+          next_token: nil,
+          reservations: [{
+            instances: [
+              { instance_id: 'i-1',
+                state: { name: 'running' },
+                tags: [
+                  { key: 'Name', value: 'example-1' },
+                  { key: 'auto_patch', value: '1' },
+                  { key: 'os', value: 'ubuntu' }
+                ] }
+            ]
+          }]
+        )
+
+        expect(ssm_utils).to receive(:send_patch_command).with(['i-1'], Cucloud::Ec2Utils::UBUNTU_PATCH_COMMAND)
+        ec_util.instances_to_patch_by_tag
+      end
+
+      it 'should send the patch commands for ubuntu and amazon' do
+        ec2_client.stub_responses(
+          :describe_instances,
+          next_token: nil,
+          reservations: [{
+            instances: [
+              { instance_id: 'i-1',
+                state: { name: 'running' },
+                tags: [
+                  { key: 'Name', value: 'example-1' },
+                  { key: 'auto_patch', value: '1' },
+                  { key: 'os', value: 'ubuntu' }
+                ] },
+              { instance_id: 'i-2',
+                state: { name: 'running' },
+                tags: [
+                  { key: 'Name', value: 'example-1' },
+                  { key: 'auto_patch', value: '1' },
+                  { key: 'os', value: 'amazon' }
+                ] }
+            ]
+          }]
+        )
+
+        expect(ssm_utils).to receive(:send_patch_command).with(['i-1'], Cucloud::Ec2Utils::UBUNTU_PATCH_COMMAND)
+        expect(ssm_utils).to receive(:send_patch_command).with(['i-2'], Cucloud::Ec2Utils::AMAZON_PATCH_COMMAND)
+        ec_util.instances_to_patch_by_tag
+      end
     end
   end
 end
