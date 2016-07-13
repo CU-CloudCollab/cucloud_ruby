@@ -1,4 +1,4 @@
-# Cucloud ![Build Status](https://api.travis-ci.org/CU-CloudCollab/cucloud_ruby.svg) [![Gem Version](https://badge.fury.io/rb/cucloud.svg)](https://badge.fury.io/rb/cucloud)
+# Cucloud ![Build Status](https://api.travis-ci.org/CU-CloudCollab/cucloud_ruby.svg) [![Gem Version](https://badge.fury.io/rb/cucloud.svg)](https://badge.fury.io/rb/cucloud) [![Coverage Status](https://coveralls.io/repos/github/CU-CloudCollab/cucloud_ruby/badge.svg?branch=master)](https://coveralls.io/github/CU-CloudCollab/cucloud_ruby?branch=master)
 
 The cucloud module is intended to serve as a lightweight wrapper around the AWS SDK that can be used to share common functionality across various AWS utilities and tools that we develop at Cornell.  Goals:
 
