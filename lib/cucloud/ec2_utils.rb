@@ -6,9 +6,10 @@ module Cucloud
     UBUNTU_PATCH_COMMAND = 'apt-get update; apt-get -y upgrade; reboot'.freeze
     AMAZON_PATCH_COMMAND = 'yum update -y; reboot & disown '.freeze
 
-    def initialize(ec2_client = Aws::EC2::Client.new)
+    def initialize(ec2_client = Aws::EC2::Client.new, ssm_utils = Cucloud::SSMUtils.new)
       ## DI for testing purposes
       @ec2 = ec2_client
+      @ssm_utils = ssm_utils
     end
 
     def get_instance(instance)
@@ -82,18 +83,6 @@ module Cucloud
       end
     end
 
-    def send_patch_command(patch_instances, command)
-      ssm = Aws::SSM::Client.new(region: 'us-east-1')
-
-      ssm.send_command(instance_ids: patch_instances, # required
-                       document_name: 'AWS-RunShellScript', # required
-                       timeout_seconds: 600,
-                       comment: 'Patch It!',
-                       parameters: {
-                         'commands' => [command]
-                       })
-    end
-
     # rubocop:disable Metrics/CyclomaticComplexity
     # rubocop:disable Metrics/PerceivedComplexity
     # @todo consider refactoring/breaking out functionality so that complexity metrics pass
@@ -119,8 +108,8 @@ module Cucloud
         end
       end
 
-      send_patch_command(ubuntu_patch_instances, UBUNTU_PATCH_COMMAND) if ubuntu_patch_instances.any?
-      send_patch_command(amazon_patch_instances, AMAZON_PATCH_COMMAND) if amazon_patch_instances.any?
+      @ssm_utils.send_patch_command(ubuntu_patch_instances, UBUNTU_PATCH_COMMAND) if ubuntu_patch_instances.any?
+      @ssm_utils.send_patch_command(amazon_patch_instances, AMAZON_PATCH_COMMAND) if amazon_patch_instances.any?
 
       all_instances
     end

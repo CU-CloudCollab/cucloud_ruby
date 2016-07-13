@@ -12,4 +12,14 @@ describe Cucloud do
 
     expect(Aws::S3::Client.new.list_buckets.buckets.map(&:name)).to eq [dummy]
   end
+
+  it "should return us-east-1 as the defualt region" do
+    expect(Cucloud::DEFAULT_REGION).to eq 'us-east-1'
+  end
+
+  it "should allow to change the region" do
+    Cucloud.region = 'us-west-1'
+    expect(Cucloud.region).to eq 'us-west-1'
+    expect(Aws.config[:region]).to eq 'us-west-1'
+  end
 end

@@ -5,6 +5,7 @@ module Cucloud
   require 'cucloud/version'
   require 'cucloud/ec2_utils'
   require 'cucloud/asg_utils'
+  require 'cucloud/ssm_utils'
 
   DEFAULT_REGION = 'us-east-1'.freeze
 
