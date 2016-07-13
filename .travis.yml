@@ -13,3 +13,7 @@ deploy:
   on:
     tags: true
     repo: CU-CloudCollab/cucloud_ruby
+notifications:
+  hipchat:
+    rooms:
+      secure: poxd8oy6KvYQe2yfe6vms84iW/HzPAQyt07r1Z2GhEjaW5Oof5Gi/FPl/j6L3im/ymy8KPuCN4MI0ZjglIq0qRuiFJai107uhgxZb0+31DOfM2DL0OFJOWfmm1rI8mLdyfQ1KYYx7115vtE4ZBqxSb3q3o66/3CISGfQR1dmHx8jT1ABGBf5fPLhxvu6BLnxgsdGQWFC/Va7DHhhUb//R0dZIENNy0WOJlaAjgm00Dp96sDHe+h3hzYuNA3ZCU6dos2nyKT0FrNDzcfofCaPkekUkb/Dm8LDup/HXeg4DM7a+MfKcn6NUjUcTx28o+rAggDPpDxIr4f38rsDFKip47CGrO3jhVK0Q1lOO6/gWUnGn1Ec0sB9uCNHlSa860oINw7eU3kC38DwBcspMItRpDo6eBkdh7irEibu14+FtCq/QgHjDghLNfJb/Zw4zo5Ip+yDbmDtdDXA7T7t4DXD/2T4UKKc9FvjTmv224QFi5XQUOiIUDNGjCvhqVDKKZv9KuYspiBy0xoxroGtWR4dqqZwlikvTKsSGIJASTZHlmZ3vfzrAWzHfC0twWZ2kmkM8j6V81lZqCxfv6xRj7fKw68B7LahfuBsQUpgWEnBcZ8qnMyRuIeq7Rm7cqkL/7ZG7cpoCRXaXRMGQZ2sUgZkWQ9RuTFTzaa6jUFZGFpnufs=
