@@ -11,12 +11,12 @@ Gem::Specification.new do |spec|
 
   spec.email         = ['shawn.bower@gmail.com', 'bmh67@cornell.edu', 'sr523@cornell.edu']
 
-  spec.summary       = 'The cucloud module is intended to provide functionality requiring more customization than ' \
-                       'could otherwise be simply accomplished with a cloud specific command line interface, e.g. ' \
-                       'AWS CLI'
-  spec.description   = 'The cucloud module is intended to provide functionality requiring more customization than ' \
-                       'could otherwise be simply accomplished with a cloud specific command line interface, e.g. ' \
-                       'AWS CLI'
+  spec.summary       = 'The cucloud module is intended to serve as a lightweight wrapper around the AWS SDK that ' \
+                       'can be used to share common functionality across various AWS utilities and tools that we ' \
+                       'develop at Cornell'
+  spec.description   = 'The cucloud module is intended to serve as a lightweight wrapper around the AWS SDK that ' \
+                       'can be used to share common functionality across various AWS utilities and tools that we ' \
+                       'develop at Cornell'
   spec.homepage      = 'https://github.com/CU-CloudCollab/cucloud_ruby'
 
   spec.files         = `git ls-files -z`.split("\x0").reject { |f| f.match(%r{^(test|spec|features)/}) }
