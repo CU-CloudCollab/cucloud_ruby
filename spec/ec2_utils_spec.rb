@@ -31,7 +31,7 @@ describe Cucloud::Ec2Utils do
             { instance_id: 'i-1',
               state: { name: 'running' },
               tags: [
-                { key: 'Name', value: 'example-1' },
+                { key: 'Name', value: 'example-1' }
               ] }
           ]
         }]
@@ -75,11 +75,11 @@ describe Cucloud::Ec2Utils do
     end
 
     describe '#instances_to_patch_by_tag' do
-      it "should run without an error with no valid targets" do
+      it 'should run without an error with no valid targets' do
         expect { ec_util.instances_to_patch_by_tag }.not_to raise_error
       end
 
-      it "should send the patch commands for ubuntu " do
+      it 'should send the patch commands for ubuntu' do
         ec2_client.stub_responses(
           :describe_instances,
           next_token: nil,
@@ -100,7 +100,7 @@ describe Cucloud::Ec2Utils do
         ec_util.instances_to_patch_by_tag
       end
 
-      it "should send the patch commands for ubuntu and amazon " do
+      it 'should send the patch commands for ubuntu and amazon' do
         ec2_client.stub_responses(
           :describe_instances,
           next_token: nil,
