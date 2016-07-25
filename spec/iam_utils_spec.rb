@@ -513,13 +513,6 @@ describe Cucloud::IamUtils do
       expect(iam_util.get_user_access_keys('test-user')[3][:active]).to eq true
     end
 
-    it "'get_user_access_keys' active boolean should calculate correctly" do
-      expect(iam_util.get_user_access_keys('test-user')[0][:active]).to eq true
-      expect(iam_util.get_user_access_keys('test-user')[1][:active]).to eq false
-      expect(iam_util.get_user_access_keys('test-user')[2][:active]).to eq true
-      expect(iam_util.get_user_access_keys('test-user')[3][:active]).to eq true
-    end
-
     it "'get_active_keys_older_than_n_days' should return without an error" do
       expect { iam_util.get_active_keys_older_than_n_days(80) }.not_to raise_error
     end
