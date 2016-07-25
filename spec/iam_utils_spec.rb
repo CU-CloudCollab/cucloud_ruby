@@ -74,8 +74,12 @@ describe Cucloud::IamUtils do
     end
 
     it "'get_account_summary' return hash should have expected keys/values" do
-      expect(iam_util.get_account_summary['test_key_3'].nil? ||
-             iam_util.get_account_summary['test_key_2'].nil?).to eq true
+      expect(iam_util.get_account_summary['test_key_1']).to eq 1
+      expect(iam_util.get_account_summary['test_key_2']).to eq 2
+    end
+
+    it "'get_account_summary' return nil for key that doesn't exist" do
+      expect(iam_util.get_account_summary['test_key_3'].nil?).to eq true
     end
   end
 
@@ -480,7 +484,7 @@ describe Cucloud::IamUtils do
       expect { iam_util.get_user_access_keys('test-user') }.not_to raise_error
     end
 
-    it "'get_user_access_keys' should return empty array" do
+    it "'get_user_access_keys' should return non-empty array" do
       expect(iam_util.get_user_access_keys('test-user').empty?).to eq false
     end
 
