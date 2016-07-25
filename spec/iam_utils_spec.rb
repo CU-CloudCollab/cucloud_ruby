@@ -567,7 +567,7 @@ describe Cucloud::IamUtils do
       audit_example = [
         {
           key: 'minimum_password_length',
-          operator: 'GT',
+          operator: 'GTE',
           value: 15
         },
         {
@@ -601,12 +601,12 @@ describe Cucloud::IamUtils do
           value: true
         },
         {
-          operator: 'LT',
+          operator: 'LTE',
           key: 'max_password_age',
           value: 10
         },
         {
-          operator: 'LT',
+          operator: 'LTE',
           key: 'password_reuse_prevention',
           value: 3
         },
@@ -629,16 +629,6 @@ describe Cucloud::IamUtils do
       expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
     end
 
-    it "'audit_password_policy' should throw AuditKeyNotFoundError exception on unknown check key" do
-      test_audit = [{
-        operator: 'EQ',
-        key: 'hard_expiryyyy',
-        value: true
-      }]
-
-      expect { iam_util.audit_password_policy(test_audit) }.to raise_error(Cucloud::IamUtils::AuditKeyNotFoundError)
-    end
-
     it "'audit_password_policy' should throw UnknownComparisonOperatorError exception on unknown operator" do
       test_audit = [{
         operator: 'EQQ',
@@ -649,6 +639,106 @@ describe Cucloud::IamUtils do
       expect do
         iam_util.audit_password_policy(test_audit)
       end.to raise_error(Cucloud::IamUtils::UnknownComparisonOperatorError)
+    end
+
+    it "'audit_password_policy' should fail test if key not found" do
+      audit_example = [{
+        operator: 'EQ',
+        key: 'hard_expiryy',
+        value: true
+      }]
+
+      expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
+    end
+  end
+
+  context 'while IAM get_account_password_policy is stubbed out with nil values' do
+    before do
+      iam_client.stub_responses(
+        :get_account_password_policy,
+        password_policy: {
+          minimum_password_length: nil,
+          require_symbols: false,
+          require_numbers: true,
+          require_uppercase_characters: true,
+          require_lowercase_characters: false,
+          allow_users_to_change_password: true,
+          expire_passwords: true,
+          max_password_age: nil,
+          password_reuse_prevention: 1,
+          hard_expiry: true
+        }
+      )
+    end
+
+    it "'audit_password_policy' should return without an error" do
+      expect { iam_util.audit_password_policy }.not_to raise_error
+    end
+
+    it "'audit_password_policy' should fail tests where policy value is nil" do
+      audit_example = [
+        {
+          key: 'minimum_password_length',
+          operator: 'GTE',
+          value: 15
+        },
+        {
+          operator: 'EQ',
+          key: 'require_symbols',
+          value: true
+        },
+        {
+          operator: 'EQ',
+          key: 'require_numbers',
+          value: true
+        },
+        {
+          operator: 'EQ',
+          key: 'require_uppercase_characters',
+          value: true
+        },
+        {
+          operator: 'EQ',
+          key: 'require_lowercase_characters',
+          value: true
+        },
+        {
+          operator: 'EQ',
+          key: 'allow_users_to_change_password',
+          value: true
+        },
+        {
+          operator: 'EQ',
+          key: 'expire_passwords',
+          value: true
+        },
+        {
+          operator: 'LTE',
+          key: 'max_password_age',
+          value: 10
+        },
+        {
+          operator: 'LTE',
+          key: 'password_reuse_prevention',
+          value: 3
+        },
+        {
+          operator: 'EQ',
+          key: 'hard_expiry',
+          value: true
+        }
+      ]
+
+      expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
+      expect(iam_util.audit_password_policy(audit_example)[1][:passes]).to eq false
+      expect(iam_util.audit_password_policy(audit_example)[2][:passes]).to eq true
+      expect(iam_util.audit_password_policy(audit_example)[3][:passes]).to eq true
+      expect(iam_util.audit_password_policy(audit_example)[4][:passes]).to eq false
+      expect(iam_util.audit_password_policy(audit_example)[5][:passes]).to eq true
+      expect(iam_util.audit_password_policy(audit_example)[6][:passes]).to eq true
+      expect(iam_util.audit_password_policy(audit_example)[7][:passes]).to eq false
+      expect(iam_util.audit_password_policy(audit_example)[8][:passes]).to eq true
+      expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
     end
   end
 end

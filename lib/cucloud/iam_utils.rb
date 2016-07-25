@@ -4,8 +4,6 @@ module Cucloud
     # Define some error classes
     class UnknownComparisonOperatorError < StandardError
     end
-    class AuditKeyNotFoundError < StandardError
-    end
 
     def initialize(iam_client = Aws::IAM::Client.new)
       @iam = iam_client
@@ -61,28 +59,28 @@ module Cucloud
     # example output: [{ key: "minimum_password_length", passes: true }]
     # @param [Array<Hash>] Policy against which to audit
     # @return [Array<Hash>] Results of each audit check
+    # rubocop:disable Metrics/CyclomaticComplexity
+    # disable complexity check here - doesn't seem worth breaking this function up
     def audit_password_policy(audit_criteria = [])
       policy_hash = get_account_password_policy.to_h
 
       audit_array = []
       audit_criteria.each do |check|
-        raise AuditKeyNotFoundError.new, "Unknown audit key #{check[:key]}" if policy_hash[check[:key].to_sym].nil?
-
         case check[:operator]
         when 'EQ'
           audit_array << {
             key: check[:key],
-            passes: policy_hash[check[:key].to_sym] == check[:value]
+            passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] == check[:value]
           }
-        when 'LT'
+        when 'LTE'
           audit_array << {
             key: check[:key],
-            passes: policy_hash[check[:key].to_sym] < check[:value]
+            passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] <= check[:value]
           }
-        when 'GT'
+        when 'GTE'
           audit_array << {
             key: check[:key],
-            passes: policy_hash[check[:key].to_sym] > check[:value]
+            passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] >= check[:value]
           }
         else
           raise UnknownComparisonOperatorError.new, "Unknown operator #{check[:operator]}"
@@ -91,6 +89,7 @@ module Cucloud
 
       audit_array
     end
+    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Get SAML providers configured for this account
     # @return [Array<Hash>] Array of hashes in form { arn: <String>, metadata: <String> }
