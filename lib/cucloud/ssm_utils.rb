@@ -5,6 +5,9 @@ module Cucloud
       @ssm = ssm_client
     end
 
+    # Used to send patching command to ec2 linux instance
+    # @param patch_instances [array] array of instance instance ids
+    # @param command [string] patching command to be sent
     def send_patch_command(patch_instances, command)
       @ssm.send_command(
         instance_ids: patch_instances, # required

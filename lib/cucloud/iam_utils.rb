@@ -59,8 +59,6 @@ module Cucloud
     # example output: [{ key: "minimum_password_length", passes: true }]
     # @param [Array<Hash>] Policy against which to audit
     # @return [Array<Hash>] Results of each audit check
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # disable complexity check here - doesn't seem worth breaking this function up
     def audit_password_policy(audit_criteria = [])
       policy_hash = get_account_password_policy.to_h
 
@@ -89,7 +87,6 @@ module Cucloud
 
       audit_array
     end
-    # rubocop:enable Metrics/CyclomaticComplexity
 
     # Get SAML providers configured for this account
     # @return [Array<Hash>] Array of hashes in form { arn: <String>, metadata: <String> }
