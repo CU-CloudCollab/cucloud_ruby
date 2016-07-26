@@ -38,7 +38,7 @@ C8N6DXggDWPtPRdpk96UW45huvXudpZenrcd7A==</ds:X509Certificate>).freeze
   # Returns the current region the mdule is using
   # @ return [string]
   def region
-    @region
+    @region || @region = DEFAULT_REGION
   end
 
   # sets the current region for the module to use

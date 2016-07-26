@@ -18,58 +18,51 @@ module Cucloud
       @vpc = vpc_client
     end
 
-    # Compare NACLS in a list of regions with a specified rule set
-    # @param regions [Array] List of AWS regions to compare rule set against
+    # Compare NACLS in a the current region with a specified rule set
     # @param rules [Array]  List of ACL rules to compart with AWS
     # @param skip_acl [Array] List of ACL ids to skip in comparison
-    # @return [Hash]
-    #   * resp.region.network_acl_id.missing #=> Array
-    #     * resp.region.network_acl_id.missing[0].cidr #=> String
-    #     * resp.region.network_acl_id.missing[0].protocol #=> String
-    #     * resp.region.network_acl_id.missing[0].egress #=> String
-    #     * resp.region.network_acl_id.missing[0].to #=> String
-    #     * resp.region.network_acl_id.missing[0].from #=> String
-    #   * resp.region.network_acl_id.additional #=> Array
-    #     * resp.region.network_acl_id.additional[0].cidr #=> String
-    #     * resp.region.network_acl_id.additional[0].protocol #=> String
-    #     * resp.region.network_acl_id.additional[0].egress #=> String
-    #     * resp.region.network_acl_id.additional[0].to #=> String
-    #     * resp.region.network_acl_id.additional[0].from #=> String
-    def compare_nacls(regions, rules, skip_acl = [])
-      raise ArgumentError, 'regions is not an array' unless regions.is_a? Array
+    # @return [Array<Hash <String, String>>]
+    #   * resp[0].acl #=> String
+    #   * resp[0].missing[0] #=> Array
+    #     * resp[0].missing[0].cidr #=> String
+    #     * resp[0]missing[0].protocol #=> String
+    #     * resp[0]missing[0].egress #=> String
+    #     * resp[0]missing[0].to #=> String
+    #     * resp[0]missing[0].from #=> String
+    #   * resp[0].additional #=> Array
+    #     * resp[0]additional[0].cidr #=> String
+    #     * resp[0]additional[0].protocol #=> String
+    #     * resp[0]additional[0].egress #=> String
+    #     * resp[0]additional[0].to #=> String
+    #     * resp[0]additional[0].from #=> String
+    def compare_nacls(rules, skip_acl = [])
       raise ArgumentError, 'rules is not an array' unless rules.is_a? Array
-      compared_rules = {}
-      initial_region = Cucloud.region
+      compared_rules = []
 
-      regions.each do |region|
-        Cucloud.region = region
-        nacls = @vpc.describe_network_acls({})
-        compared_rules[region] = {}
+      nacls = @vpc.describe_network_acls({})
 
-        nacls.network_acls.each do |acl|
-          next if skip_acl.include?(acl.network_acl_id)
-          compared_rules[region][acl.network_acl_id] = {}
-          check_acls(acl, compared_rules)
-        end
+      nacls.network_acls.each do |acl|
+        next if skip_acl.include?(acl.network_acl_id)
+        compared_rules.push(check_acls(acl, rules))
       end
-      Cucloud.region = initial_region
       compared_rules
     end
 
     # Does the current region have vpc flow logs?
-    # @reutrn [boolean]
+    # @return [boolean]
     def flow_logs?
-      @vpc.describe_flow_logs({}).empty?
+      !@vpc.describe_flow_logs({}).empty?
     end
 
     private
 
     # Compare ACL entries aganinst a rule set
-    def check_acls(acl, compared_rules)
+    def check_acls(acl, rules)
+      missing_entries = rules
+      additional_entries = []
+
       acl.entries.each do |entry|
         next unless entry.rule_number < 32_767
-        missing_entries = rules
-        additional_entries = []
 
         find_rule = lambda do |rule|
           test = rule[:cidr] == entry.cidr_block && rule[:protocol] == entry.protocol && rule[:egress] == entry.egress
@@ -90,9 +83,8 @@ module Cucloud
                                   to: entry.port_range.nil? ? '-1' : entry.port_range.to,
                                   from: entry.port_range.nil? ? '-1' : entry.port_range.from)
         end
-        compared_rules[region][acl.network_acl_id][:missing] = missing_entries
-        compared_rules[region][acl.network_acl_id][:additional] = additional_entries
       end
+      { acl: acl.network_acl_id, missing: missing_entries, additional: additional_entries }
     end
   end
 end
