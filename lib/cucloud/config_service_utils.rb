@@ -50,7 +50,7 @@ module Cucloud
     # Get evaluation status of rule by name
     # @param [String] Rule name
     # @return [Types::ConfigRuleEvaluationStatus] Evaluation status of rule
-    def get_rule_evaluation_status(rule_name)
+    def get_rule_evaluation_status_by_name(rule_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/ConfigService/Client.html#describe_config_rule_evaluation_status-instance_method
       @cs.describe_config_rule_evaluation_status(
         config_rule_names: [rule_name]
@@ -61,7 +61,7 @@ module Cucloud
     # @param [String] Rule name
     # @return [Types::EvaluationResult]
     # @TODO verify that first return is always what we want?  i.e, always ordered decending by date?
-    def get_rule_compliance(rule_name)
+    def get_rule_compliance_by_name(rule_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/ConfigService/Client.html#describe_config_rule_evaluation_status-instance_method
       @cs.get_compliance_details_by_config_rule(
         config_rule_name: rule_name
@@ -69,35 +69,33 @@ module Cucloud
     end
 
     # Is this rule active?
-    # @param [String] Rule name
+    # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
-    def rule_active?(rule_name)
-      rule = get_config_rule_by_name(rule_name)
+    def rule_active?(rule)
       rule.config_rule_state == 'ACTIVE'
     end
 
     # Has this rule run in the last 24 hours?
-    # @param [String] Rule name
+    # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
-    def rule_ran_in_last_day?(rule_name)
-      last_run = get_rule_evaluation_status(rule_name).last_successful_invocation_time
+    def rule_ran_in_last_day?(rule)
+      last_run = get_rule_evaluation_status_by_name(rule.config_rule_name).last_successful_invocation_time
       yesterday = Time.now - (60 * 60 * 24)
       (yesterday <=> last_run) < 0
     end
 
     # Is this rule currently passing?
-    # @param [String] Rule name
+    # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
-    def rule_compliant?(rule_name)
-      get_rule_compliance(rule_name).compliance_type == 'COMPLIANT'
+    def rule_compliant?(rule)
+      get_rule_compliance_by_name(rule.config_rule_name).compliance_type == 'COMPLIANT'
     end
 
     # Is this a cloudtrail rule?
-    # @param [String] Rule name
+    # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
     # @TODO move this to cloudtrail util when it is created (?)
-    def rule_for_cloudtrail?(rule_name)
-      rule = get_config_rule_by_name(rule_name)
+    def rule_for_cloudtrail?(rule)
       rule.source.source_identifier == 'CLOUD_TRAIL_ENABLED' && rule.source.owner == 'AWS'
     end
   end
