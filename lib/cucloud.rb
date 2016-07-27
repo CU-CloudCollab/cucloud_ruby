@@ -7,11 +7,15 @@ module Cucloud
   require 'cucloud/asg_utils'
   require 'cucloud/ssm_utils'
   require 'cucloud/iam_utils'
+  require 'cucloud/vpc_utils'
 
+  # This is the default region API calls are made against
   DEFAULT_REGION = 'us-east-1'.freeze
 
   Aws.config = { region: DEFAULT_REGION }
 
+  # This is the public certificate for shibbloeth,
+  # used to check for proper account setup
   CORNELL_SAML_X509 = %(<ds:X509Certificate>MIIDSDCCAjCgAwIBAgIVAOZ8NfBem6sHcI7F39sYmD/JG4YDMA0GCSqGSIb3DQEB
 BQUAMCIxIDAeBgNVBAMTF3NoaWJpZHAuY2l0LmNvcm5lbGwuZWR1MB4XDTA5MTEy
 MzE4NTI0NFoXDTI5MTEyMzE4NTI0NFowIjEgMB4GA1UEAxMXc2hpYmlkcC5jaXQu
@@ -31,10 +35,14 @@ prGI2oAv/ShPBOyrkadectHzvu5K6CL7AxNTWCSXswtfdsuxcKo65tO5TRO1hWlr
 p36uB6TmSYl1nBmS5LgWF4EpEuODPSmy4sIV6jl1otuyI/An2dOcNqcgu7tYEXLX
 C8N6DXggDWPtPRdpk96UW45huvXudpZenrcd7A==</ds:X509Certificate>).freeze
 
+  # Returns the current region the mdule is using
+  # @ return [string]
   def region
-    @region
+    @region || @region = DEFAULT_REGION
   end
 
+  # sets the current region for the module to use
+  # @param region [string] this is the AWS region to use, ie 'us-east-1'
   def region=(region)
     @region = region
     Aws.config = { region: @region }

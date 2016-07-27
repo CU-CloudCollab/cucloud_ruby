@@ -5,6 +5,11 @@ module Cucloud
       @s3 = s3
     end
 
+    # Enable logging to a s3 bucket for an ELB
+    # @param elb_name [string] name of the elastic load balancer
+    # @param app_name [string] name of the application, used as prefix inside s3 bucket
+    # @param policy [string] IAM policy to be applied to the bucket
+    # @return [boolean]
     def enable_logging(elb_name, app_name, policy, _elb = Aws::ElasticLoadBalancing::Client.new)
       ## Added by Scott Ross
       ## Stand alone script found here: https://github.com/CU-CloudCollab/elb-logging/

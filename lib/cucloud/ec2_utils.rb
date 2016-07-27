@@ -1,68 +1,74 @@
 module Cucloud
   # EC2Utils class - anything ec2 related goes here!
   class Ec2Utils
-    MAX_TIMEOUT = 480
-    SECONDS_IN_A_DAY = 86_400
+    # This is the command sent to ubuntu for patching
     UBUNTU_PATCH_COMMAND = 'apt-get update; apt-get -y upgrade; reboot'.freeze
+    # THis is the command sent to amazon linux machines for patching
     AMAZON_PATCH_COMMAND = 'yum update -y; reboot & disown '.freeze
 
     def initialize(ec2_client = Aws::EC2::Client.new, ssm_utils = Cucloud::SSMUtils.new)
-      ## DI for testing purposes
       @ec2 = ec2_client
       @ssm_utils = ssm_utils
     end
 
+    # Get instance information for a specific instance
     def get_instance(instance)
-      ## Get instance information for a specific instance
       @ec2.describe_instances(instance_ids: [instance])
     end
 
+    # Stop ec2 instance for a specific instance number. The function will wait
+    # until the instance has entered the stopped state.
+    # @param instance [String] instance id in the format of i-121231231231
     def stop_instance(instance)
-      # Stop ec2 instance for a specific instance number. The function will wait until the instance has entered
-      #   the stopped state.
       @ec2.stop_instances(instance_ids: [instance])
     end
 
+    # Start ec2 instance for a specific instance number. The function will wait
+    #   until the instance has entered the running state.
+    # @param instance [String] instance id in the format of i-121231231231
     def start_instance(instance)
-      # Start ec2 instance for a specific instance number. The function will wait until the instance has entered
-      #   the running state.
       @ec2.start_instances(instance_ids: [instance])
     end
 
+    # Set the name of the instance that will be displayed in the ec2 console
     def rename_instance(instance, name)
-      # Set the name of the instance that will be displayed in the ec2 console
     end
 
+    # reboot instance
     def reboot_instance(instance)
     end
 
+    # Terminate ec2 instance for a specific instance number.
     def delete_instance(instance)
-      ## Terminate ec2 instance for a specific instance number.
     end
 
+    # Assoications an Elastic IP adress with a specific instance number.
+    # @return association_id as a string in the form of eipassoc-569cd631.
+    #  This is the link between between the
+    #  elastic network interface and the elastic IP address.
     def associate_eip(instance, allocation_id)
-      # Assoications an Elastic IP adress with a specific instance number.
-
-      # Return: association_id as a string in the form of eipassoc-569cd631. This is the link between between the
-      #  elastic network interface and the elastic IP address.
     end
 
+    # Create ec2 instance based on parameters provided. The function will pull
+    #   in default information from ?????.
+    # @param options [hash] will be hash that will override the default
     def create_instance(options)
-      ## Create ec2 instance based on parameters provided. The function will pull in default information from ?????.
-      ## Options will be hash that will override the default
-      ## Default will need to be pulled from ... ??
     end
 
+    # Remove private AMI
     def deregister_image(image)
-      # Remove private AMI
     end
 
+    # Find ami based on a search of Name
     def find_ami(name)
-      # Find ami based on a search of Name
     end
 
+    # Based on tag name and value, return instances
+    # @param tag_name [string] name of tag
+    # @param tag_value [string] the value of the tag
+    # @return [array] aws reservations see
+    #  http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#describe_instances-instance_method
     def get_instances_by_tag(tag_name, tag_value)
-      ## Based on tag name and value, return instances
       @ec2.describe_instances(filters: [
                                 {
                                   name: "tag:#{tag_name}",
@@ -71,21 +77,27 @@ module Cucloud
                               ])
     end
 
+    # stop instances based on a tag name and value
+    # @param tag_name [string] name of tag
+    # @param tag_value [string] the value of the tag
     def stop_instances_by_tag(tag_name, tag_value)
       get_instances_by_tag(tag_name, tag_value).reservations[0].instances.each do |i|
         @ec2.stop_instances(instance_ids: [i.instance_id])
       end
     end
 
+    # start instances based on a tag name and value
+    # @param tag_name [string] name of tag
+    # @param tag_value [string] the value of the tag
     def start_instances_by_tag(tag_name, tag_value)
       get_instances_by_tag(tag_name, tag_value).reservations[0].instances.each do |i|
         @ec2.start_instances(instance_ids: [i.instance_id])
       end
     end
 
-    # rubocop:disable Metrics/CyclomaticComplexity
-    # rubocop:disable Metrics/PerceivedComplexity
-    # @todo consider refactoring/breaking out functionality so that complexity metrics pass
+    # patch instances based on a tag name and value
+    # @param tag_name [string] name of tag
+    # @param tag_value [string] the value of the tag
     def instances_to_patch_by_tag(tag_name = 'auto_patch', tag_value = ['1'])
       resp = get_instances_by_tag(tag_name, tag_value)
 
