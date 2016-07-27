@@ -19,7 +19,7 @@ module Cucloud
     end
 
     # Constructor for ConfigServiceUtilsclass
-    # @param asg_client [Aws::ConfigService::Client] AWS ConfigService SDK Client
+    # @param [Aws::ConfigService::Client] AWS ConfigService SDK Client
     def initialize(cs_client = Aws::ConfigService::Client.new)
       unless Cucloud::ConfigServiceUtils.get_available_regions.include? Cucloud.region
         raise Cucloud::ConfigServiceUtils::UnsupportedRegionError,

@@ -17,6 +17,12 @@ describe Cucloud::ConfigServiceUtils do
     expect(Cucloud::ConfigServiceUtils.new(cs_client)).to be_a_kind_of(Cucloud::ConfigServiceUtils)
   end
 
+  it '.new should throw Cucloud::ConfigServiceUtils::UnsupportedRegionError when using unsupported region' do
+    Cucloud.region = 'us-west-1'
+    expect { Cucloud::ConfigServiceUtils.new }.to raise_error(Cucloud::ConfigServiceUtils::UnsupportedRegionError)
+    Cucloud.region = Cucloud::DEFAULT_REGION # set it back to default so the rest of our tests pass!
+  end
+
   it 'get_available_regions class method call should be successful' do
     expect(Cucloud::ConfigServiceUtils.get_available_regions.class.to_s).to eq 'Array'
     expect(Cucloud::ConfigServiceUtils.get_available_regions.length).to eq 5
@@ -192,7 +198,7 @@ describe Cucloud::ConfigServiceUtils do
       expect { cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
     end
 
-    it "'rule_active?' should return true" do
+    it "'rule_active?' should return false" do
       expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
     end
 
