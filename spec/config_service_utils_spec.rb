@@ -28,7 +28,7 @@ describe Cucloud::ConfigServiceUtils do
     expect(Cucloud::ConfigServiceUtils.get_available_regions.length).to eq 5
   end
 
-  context 'while describe_config_rules is stubbed out with response' do
+  context 'while describe_config_rules is stubbed out with a 2-rule response' do
     before do
       cs_client.stub_responses(
         :describe_config_rules,
@@ -195,7 +195,7 @@ describe Cucloud::ConfigServiceUtils do
     end
   end
 
-  context 'while describe_config_rule_evaluation_status is stubbed out as running in last day' do
+  context 'while describe_config_rule_evaluation_status is stubbed out as running 23 hours ago' do
     before do
       cs_client.stub_responses(
         :describe_config_rules,
@@ -257,16 +257,16 @@ describe Cucloud::ConfigServiceUtils do
       expect(cs_util.get_rule_evaluation_status_by_name('test-rule-1').config_rule_name).to eq 'test-rule-1'
     end
 
-    it "'rule_ran_in_last_day?' should return without an error" do
-      expect { cs_util.rule_ran_in_last_day?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+    it "'hours_since_last_run' should return without an error" do
+      expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
     end
 
-    it "'rule_ran_in_last_day?' should return true" do
-      expect(cs_util.rule_ran_in_last_day?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
+    it "'hours_since_last_run' should return 23" do
+      expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1'))).to eq 23
     end
   end
 
-  context 'while describe_config_rule_evaluation_status is stubbed out as running > 24 hours ago' do
+  context 'while describe_config_rule_evaluation_status is stubbed out with nil last invocation' do
     before do
       cs_client.stub_responses(
         :describe_config_rules,
@@ -307,7 +307,7 @@ describe Cucloud::ConfigServiceUtils do
             config_rule_name: 'test-rule-1',
             config_rule_arn: 'test-rule-arn-1',
             config_rule_id: 'test-rule-id-1',
-            last_successful_invocation_time: Time.now - (60 * 60 * 25),
+            last_successful_invocation_time: nil,
             last_failed_invocation_time: Time.now - (60 * 60 * 24),
             last_successful_evaluation_time: Time.now - (60 * 60 * 24),
             last_failed_evaluation_time: Time.now - (60 * 60 * 24),
@@ -320,12 +320,12 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'rule_ran_in_last_day?' should return without an error" do
-      expect { cs_util.rule_ran_in_last_day?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+    it "'hours_since_last_run' should return without an error" do
+      expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
     end
 
-    it "'rule_ran_in_last_day?' should return false" do
-      expect(cs_util.rule_ran_in_last_day?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
+    it "'hours_since_last_run' should return nil" do
+      expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')).nil?).to eq true
     end
   end
 

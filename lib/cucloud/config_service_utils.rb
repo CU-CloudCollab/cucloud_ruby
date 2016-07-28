@@ -75,20 +75,21 @@ module Cucloud
       rule.config_rule_state == 'ACTIVE'
     end
 
-    # Has this rule run in the last 24 hours?
-    # @param [Aws::ConfigService::Types::ConfigRule] Rule
-    # @return [Boolean]
-    def rule_ran_in_last_day?(rule)
-      last_run = get_rule_evaluation_status_by_name(rule.config_rule_name).last_successful_invocation_time
-      yesterday = Time.now - (60 * 60 * 24)
-      (yesterday <=> last_run) < 0
-    end
-
     # Is this rule currently passing?
     # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
     def rule_compliant?(rule)
       get_rule_compliance_by_name(rule.config_rule_name).compliance_type == 'COMPLIANT'
+    end
+
+    # Get hours since last config check invocation
+    # @param [Aws::ConfigService::Types::ConfigRule] Rule
+    # @return [Integer] Hours
+    def hours_since_last_run(rule)
+      last_run_time = get_rule_evaluation_status_by_name(rule.config_rule_name).last_successful_invocation_time
+      return nil if last_run_time.nil?
+
+      ((Time.now - last_run_time) / 60 / 60).to_i
     end
   end
 end
