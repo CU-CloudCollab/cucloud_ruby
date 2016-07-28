@@ -255,4 +255,96 @@ describe Cucloud::CloudTrailUtils do
       expect(ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')).nil?).to eq true
     end
   end
+
+  context 'while describe_config_rules is stubbed out with one cloudtrail rules' do
+    before do
+      cs_client.stub_responses(
+        :describe_config_rules,
+        config_rules: [
+          {
+            config_rule_name: 'test-rule-1',
+            config_rule_arn: 'test-rule-1-arn',
+            config_rule_id: 'test-rule-1-id',
+            description: 'test-rule-1 description',
+            scope: {
+              compliance_resource_types: ['test-rule-1 resource 1'],
+              tag_key: 'test-rule-1-tag-key',
+              tag_value: 'test-rule-1-tag-value',
+              compliance_resource_id: 'test-rule-1-compliance-id'
+            },
+            source: { # required
+              owner: 'AWS', # accepts CUSTOM_LAMBDA, AWS
+              source_identifier: 'CLOUD_TRAIL_ENABLED',
+              source_details: [
+                {
+                  event_source: 'aws.config', # accepts aws.config
+                  message_type: 'ConfigurationItemChangeNotification',
+                  maximum_execution_frequency: 'One_Hour'
+                }
+              ]
+            },
+            input_parameters: 'test-rule-1-input',
+            maximum_execution_frequency: 'One_Hour',
+            config_rule_state: 'ACTIVE'
+          },
+          {
+            config_rule_name: 'test-rule-2',
+            config_rule_arn: 'test-rule-2-arn',
+            config_rule_id: 'test-rule-2-id',
+            description: 'test-rule-2 description',
+            scope: {
+              compliance_resource_types: ['test-rule-2 resource 1'],
+              tag_key: 'test-rule-2-tag-key',
+              tag_value: 'test-rule-2-tag-value',
+              compliance_resource_id: 'test-rule-2-compliance-id'
+            },
+            source: { # required
+              owner: 'AWS', # accepts CUSTOM_LAMBDA, AWS
+              source_identifier: 'OTHER_RULE',
+              source_details: [
+                {
+                  event_source: 'aws.config', # accepts aws.config
+                  message_type: 'ConfigurationItemChangeNotification',
+                  maximum_execution_frequency: 'One_Hour'
+                }
+              ]
+            },
+            input_parameters: 'test-rule-2-input',
+            maximum_execution_frequency: 'One_Hour',
+            config_rule_state: 'ACTIVE'
+          }
+
+        ]
+      )
+    end
+
+    it "'get_config_rules' should return without an error" do
+      expect { ct_util.get_config_rules }.not_to raise_error
+    end
+
+    it "'get_config_rules' should return array len 1" do
+      expect(ct_util.get_config_rules.length).to eq 1
+    end
+
+    it "'get_config_rules' should return expected values" do
+      expect(ct_util.get_config_rules.first.config_rule_name).to eq 'test-rule-1'
+    end
+  end
+
+  context 'while describe_config_rules is stubbed without any rules' do
+    before do
+      cs_client.stub_responses(
+        :describe_config_rules,
+        config_rules: []
+      )
+    end
+
+    it "'get_config_rules' should return without an error" do
+      expect { ct_util.get_config_rules }.not_to raise_error
+    end
+
+    it "'get_config_rules' should return array len 0" do
+      expect(ct_util.get_config_rules.length).to eq 0
+    end
+  end
 end

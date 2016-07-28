@@ -20,6 +20,14 @@ module Cucloud
       @ct.describe_trails(include_shadow_trails: false).trail_list
     end
 
+    # Get all cloud trail config rules for this region
+    # @return [Array<Aws::ConfigService::Types::ConfigRule>]
+    def get_config_rules
+      @cs_utils.get_config_rules.select do |rule|
+        rule.source.source_identifier == 'CLOUD_TRAIL_ENABLED' && rule.source.owner == 'AWS'
+      end
+    end
+
     # Get all cloud trails for this region
     # @return [Aws::CloudTrail::Types::Trail]
     def get_cloud_trail_by_name(trail_name)

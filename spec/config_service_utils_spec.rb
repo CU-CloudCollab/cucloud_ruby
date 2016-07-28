@@ -149,14 +149,6 @@ describe Cucloud::ConfigServiceUtils do
     it "'rule_active?' should return true" do
       expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
     end
-
-    it "'rule_for_cloudtrail?' should return without an error" do
-      expect { cs_util.rule_for_cloudtrail?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
-
-    it "'rule_for_cloudtrail?' should return true" do
-      expect(cs_util.rule_for_cloudtrail?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
-    end
   end
 
   context 'while describe_config_rules is stubbed out NON-active NON-cloudtrail rule' do
@@ -200,14 +192,6 @@ describe Cucloud::ConfigServiceUtils do
 
     it "'rule_active?' should return false" do
       expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
-    end
-
-    it "'rule_for_cloudtrail?' should return without an error" do
-      expect { cs_util.rule_for_cloudtrail?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
-
-    it "'rule_for_cloudtrail?' should return false" do
-      expect(cs_util.rule_for_cloudtrail?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
     end
   end
 

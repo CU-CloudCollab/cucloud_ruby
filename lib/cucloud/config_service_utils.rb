@@ -90,13 +90,5 @@ module Cucloud
     def rule_compliant?(rule)
       get_rule_compliance_by_name(rule.config_rule_name).compliance_type == 'COMPLIANT'
     end
-
-    # Is this a cloudtrail rule?
-    # @param [Aws::ConfigService::Types::ConfigRule] Rule
-    # @return [Boolean]
-    # @TODO move this to cloudtrail util when it is created (?)
-    def rule_for_cloudtrail?(rule)
-      rule.source.source_identifier == 'CLOUD_TRAIL_ENABLED' && rule.source.owner == 'AWS'
-    end
   end
 end
