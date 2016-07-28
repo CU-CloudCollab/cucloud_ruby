@@ -9,6 +9,7 @@ module Cucloud
   require 'cucloud/iam_utils'
   require 'cucloud/vpc_utils'
   require 'cucloud/config_service_utils'
+  require 'cucloud/cloud_trail_utils'
 
   # This is the default region API calls are made against
   DEFAULT_REGION = 'us-east-1'.freeze

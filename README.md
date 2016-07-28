@@ -68,6 +68,8 @@ To install this gem onto your local machine:
 
 It's helpful to reference a local copy of the gem while developing (so you can add methods to cucloud and reference them in the utility you are developing) -- see https://rossta.net/blog/how-to-specify-local-ruby-gems-in-your-gemfile.html for a recommended approach.
 
+Development documentation is generated automatically from yard and is available at: http://www.rubydoc.info/gems/cucloud
+
 ## Contributing
 
 Bug reports and pull requests are welcome on GitHub at https://github.com/CU-CloudCollab/cucloud_ruby. The library includes functions that have been needed somewhere already - it is in no way complete yet and we love contributions!
@@ -80,4 +82,3 @@ General guidance for contributions:
 * Code should conform to Ruby Community Styleguide and pass rubocop checks using the included rubocop config (https://github.com/bbatsov/ruby-style-guide).
 
 This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [Contributor Covenant](http://contributor-covenant.org) code of conduct.
-
