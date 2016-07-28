@@ -182,7 +182,8 @@ describe Cucloud::AsgUtils do
           asg_util.generate_lc_options_hash_with_ami(
             asg_util.get_launch_configuration_by_name('test-lc'),
             'new-ami'
-          )[:launch_configuration_name] == asg_util.get_launch_configuration_by_name('test-lc').launch_configuration_name
+          )[:launch_configuration_name] == asg_util.get_launch_configuration_by_name('test-lc')
+                                                   .launch_configuration_name
         ).to eq false
       end
 
