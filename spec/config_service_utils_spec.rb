@@ -90,20 +90,24 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'get_config_rules' should return without an error" do
-      expect { cs_util.get_config_rules }.not_to raise_error
+    describe '#get_config_rules' do
+      it 'should return without an error' do
+        expect { cs_util.get_config_rules }.not_to raise_error
+      end
+
+      it 'should return a 2 element array' do
+        expect(cs_util.get_config_rules.length).to eq 2
+      end
     end
 
-    it "'get_config_rules' should return a 2 element array" do
-      expect(cs_util.get_config_rules.length).to eq 2
-    end
+    describe '#get_config_rule_by_name' do
+      it 'should return without an error' do
+        expect { cs_util.get_config_rule_by_name('test-rule-1') }.not_to raise_error
+      end
 
-    it "'get_config_rule_by_name' should return without an error" do
-      expect { cs_util.get_config_rule_by_name('test-rule-1') }.not_to raise_error
-    end
-
-    it "'get_config_rule_by_name' should return expected rule (first)" do
-      expect(cs_util.get_config_rule_by_name('test-rule-1').config_rule_arn).to eq 'test-rule-1-arn'
+      it 'should return expected rule (first)' do
+        expect(cs_util.get_config_rule_by_name('test-rule-1').config_rule_arn).to eq 'test-rule-1-arn'
+      end
     end
   end
 
@@ -142,12 +146,14 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'rule_active?' should return without an error" do
-      expect { cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
+    describe '#rule_active?' do
+      it 'should return without an error' do
+        expect { cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'rule_active?' should return true" do
-      expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
+      it 'should return true' do
+        expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
+      end
     end
   end
 
@@ -186,12 +192,14 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'rule_active?' should return without an error" do
-      expect { cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
+    describe '#rule_active?' do
+      it 'should return without an error' do
+        expect { cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'rule_active?' should return false" do
-      expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
+      it 'should return false' do
+        expect(cs_util.rule_active?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
+      end
     end
   end
 
@@ -249,20 +257,24 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'get_rule_evaluation_status_by_name' should return without an error" do
-      expect { cs_util.get_rule_evaluation_status_by_name('test-rule-1') }.not_to raise_error
+    describe '#get_rule_evaluation_status_by_name' do
+      it 'should return without an error' do
+        expect { cs_util.get_rule_evaluation_status_by_name('test-rule-1') }.not_to raise_error
+      end
+
+      it 'should return rule w/ expected values' do
+        expect(cs_util.get_rule_evaluation_status_by_name('test-rule-1').config_rule_name).to eq 'test-rule-1'
+      end
     end
 
-    it "'get_rule_evaluation_status_by_name' should return rule w/ expected values" do
-      expect(cs_util.get_rule_evaluation_status_by_name('test-rule-1').config_rule_name).to eq 'test-rule-1'
-    end
+    describe '#hours_since_last_run' do
+      it 'should return without an error' do
+        expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'hours_since_last_run' should return without an error" do
-      expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
-
-    it "'hours_since_last_run' should return 23" do
-      expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1'))).to eq 23
+      it 'should return 23' do
+        expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1'))).to eq 23
+      end
     end
   end
 
@@ -320,12 +332,14 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'hours_since_last_run' should return without an error" do
-      expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
+    describe '#hours_since_last_run' do
+      it 'should return without an error' do
+        expect { cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'hours_since_last_run' should return nil" do
-      expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')).nil?).to eq true
+      it 'should return nil' do
+        expect(cs_util.hours_since_last_run(cs_util.get_config_rule_by_name('test-rule-1')).nil?).to eq true
+      end
     end
   end
 
@@ -385,20 +399,24 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'get_rule_compliance_by_name' should return without an error" do
-      expect { cs_util.get_rule_compliance_by_name('test-rule-1') }.not_to raise_error
+    describe '#get_rule_compliance_by_name' do
+      it 'should return without an error' do
+        expect { cs_util.get_rule_compliance_by_name('test-rule-1') }.not_to raise_error
+      end
+
+      it 'should return rule w/ expected values' do
+        expect(cs_util.get_rule_compliance_by_name('test-rule-1').compliance_type).to eq 'COMPLIANT'
+      end
     end
 
-    it "'get_rule_compliance_by_name' should return rule w/ expected values" do
-      expect(cs_util.get_rule_compliance_by_name('test-rule-1').compliance_type).to eq 'COMPLIANT'
-    end
+    describe '#rule_compliant?' do
+      it 'should return without an error' do
+        expect { cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'rule_compliant?' should return without an error" do
-      expect { cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
-
-    it "'rule_compliant?' should return true" do
-      expect(cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
+      it 'should return true' do
+        expect(cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq true
+      end
     end
   end
 
@@ -458,12 +476,14 @@ describe Cucloud::ConfigServiceUtils do
       )
     end
 
-    it "'rule_compliant?' should return without an error" do
-      expect { cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
-    end
+    describe '#rule_compliant?' do
+      it 'should return without an error' do
+        expect { cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1')) }.not_to raise_error
+      end
 
-    it "'rule_compliant?' should return false" do
-      expect(cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
+      it 'should return false' do
+        expect(cs_util.rule_compliant?(cs_util.get_config_rule_by_name('test-rule-1'))).to eq false
+      end
     end
   end
 end

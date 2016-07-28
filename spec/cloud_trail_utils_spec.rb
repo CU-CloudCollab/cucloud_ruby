@@ -49,36 +49,44 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'get_cloud_trails' should return without an error" do
-      expect { ct_util.get_cloud_trails }.not_to raise_error
+    describe '#get_cloud_trails' do
+      it 'should return without an error' do
+        expect { ct_util.get_cloud_trails }.not_to raise_error
+      end
+
+      it 'should return a 1 element array' do
+        expect(ct_util.get_cloud_trails.length).to eq 1
+      end
     end
 
-    it "'get_cloud_trails' should return a 1 element array" do
-      expect(ct_util.get_cloud_trails.length).to eq 1
+    describe '#get_cloud_trail_by_name' do
+      it 'should return without an error' do
+        expect { ct_util.get_cloud_trail_by_name('test-trail-1') }.not_to raise_error
+      end
+
+      it 'should return expected trail (first)' do
+        expect(ct_util.get_cloud_trail_by_name('test-trail-1').name).to eq 'test-trail-1'
+      end
     end
 
-    it "'get_cloud_trail_by_name' should return without an error" do
-      expect { ct_util.get_cloud_trail_by_name('test-trail-1') }.not_to raise_error
+    describe '#global_trail?' do
+      it 'should return without an error' do
+        expect { ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
+
+      it 'should return true' do
+        expect(ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
+      end
     end
 
-    it "'get_cloud_trail_by_name' should return expected trail (first)" do
-      expect(ct_util.get_cloud_trail_by_name('test-trail-1').name).to eq 'test-trail-1'
-    end
+    describe '#cornell_itso_trail?' do
+      it 'should return without an error' do
+        expect { ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
 
-    it "'global_trail?' should return without an error" do
-      expect { ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
-
-    it "'global_trail?' should return true" do
-      expect(ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
-    end
-
-    it "'cornell_itso_trail?' should return without an error" do
-      expect { ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
-
-    it "'cornell_itso_trail?' should return true" do
-      expect(ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
+      it 'should return true' do
+        expect(ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
+      end
     end
   end
 
@@ -106,20 +114,24 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'global_trail?' should return without an error" do
-      expect { ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+    describe '#global_trail?' do
+      it 'should return without an error' do
+        expect { ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
+
+      it 'should return false' do
+        expect(ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
+      end
     end
 
-    it "'global_trail?' should return false" do
-      expect(ct_util.global_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
-    end
+    describe '#cornell_itso_trail?' do
+      it 'should return without an error' do
+        expect { ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
 
-    it "'cornell_itso_trail?' should return without an error" do
-      expect { ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
-
-    it "'cornell_itso_trail?' should return false" do
-      expect(ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
+      it 'should return false' do
+        expect(ct_util.cornell_itso_trail?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
+      end
     end
   end
 
@@ -168,29 +180,35 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'get_trail_status' should return without an error" do
-      expect { ct_util.get_trail_status(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+    describe '#get_trail_status' do
+      it 'should return without an error' do
+        expect { ct_util.get_trail_status(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
+
+      it 'should return expected value' do
+        expect(ct_util.get_trail_status(ct_util.get_cloud_trail_by_name('test-trail-1'))
+               .latest_delivery_error).to eq 'test-error-1'
+      end
     end
 
-    it "'get_trail_status' should return expected value" do
-      expect(ct_util.get_trail_status(ct_util.get_cloud_trail_by_name('test-trail-1'))
-             .latest_delivery_error).to eq 'test-error-1'
+    describe '#trail_logging_active?' do
+      it 'should return without an error' do
+        expect { ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
+
+      it 'should return true' do
+        expect(ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
+      end
     end
 
-    it "'trail_logging_active?' should return without an error" do
-      expect { ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
+    describe '#hours_since_last_delivery' do
+      it 'should return without an error' do
+        expect { ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
 
-    it "'trail_logging_active?' should return true" do
-      expect(ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq true
-    end
-
-    it "'hours_since_last_delivery' should return without an error" do
-      expect { ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
-
-    it "'hours_since_last_delivery' should return 23" do
-      expect(ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq 23
+      it 'should return 23' do
+        expect(ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq 23
+      end
     end
   end
 
@@ -239,20 +257,24 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'trail_logging_active?' should return without an error" do
-      expect { ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+    describe '#trail_logging_active?' do
+      it 'should return without an error' do
+        expect { ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
+
+      it 'should return false' do
+        expect(ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
+      end
     end
 
-    it "'trail_logging_active?' should return false" do
-      expect(ct_util.trail_logging_active?(ct_util.get_cloud_trail_by_name('test-trail-1'))).to eq false
-    end
+    describe '#hours_since_last_delivery' do
+      it 'should return without an error' do
+        expect { ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
+      end
 
-    it "'hours_since_last_delivery' should return without an error" do
-      expect { ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')) }.not_to raise_error
-    end
-
-    it "'hours_since_last_delivery' should return nil" do
-      expect(ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')).nil?).to eq true
+      it 'should return nil' do
+        expect(ct_util.hours_since_last_delivery(ct_util.get_cloud_trail_by_name('test-trail-1')).nil?).to eq true
+      end
     end
   end
 
@@ -318,16 +340,18 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'get_config_rules' should return without an error" do
-      expect { ct_util.get_config_rules }.not_to raise_error
-    end
+    describe '#get_config_rules' do
+      it 'should return without an error' do
+        expect { ct_util.get_config_rules }.not_to raise_error
+      end
 
-    it "'get_config_rules' should return array len 1" do
-      expect(ct_util.get_config_rules.length).to eq 1
-    end
+      it 'should return array len 1' do
+        expect(ct_util.get_config_rules.length).to eq 1
+      end
 
-    it "'get_config_rules' should return expected values" do
-      expect(ct_util.get_config_rules.first.config_rule_name).to eq 'test-rule-1'
+      it 'should return expected values' do
+        expect(ct_util.get_config_rules.first.config_rule_name).to eq 'test-rule-1'
+      end
     end
   end
 
@@ -339,12 +363,14 @@ describe Cucloud::CloudTrailUtils do
       )
     end
 
-    it "'get_config_rules' should return without an error" do
-      expect { ct_util.get_config_rules }.not_to raise_error
-    end
+    describe '#get_config_rules' do
+      it 'should return without an error' do
+        expect { ct_util.get_config_rules }.not_to raise_error
+      end
 
-    it "'get_config_rules' should return array len 0" do
-      expect(ct_util.get_config_rules.length).to eq 0
+      it 'should return array len 0' do
+        expect(ct_util.get_config_rules.length).to eq 0
+      end
     end
   end
 end

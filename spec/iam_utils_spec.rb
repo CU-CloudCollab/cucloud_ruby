@@ -27,16 +27,18 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_alias' should return without an error" do
-      expect { iam_util.get_account_alias }.not_to raise_error
-    end
+    describe '#get_account_alias' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_alias }.not_to raise_error
+      end
 
-    it "'get_account_alias' should return expected value" do
-      expect(iam_util.get_account_alias).to eq 'test-alias'
-    end
+      it 'should return expected value' do
+        expect(iam_util.get_account_alias).to eq 'test-alias'
+      end
 
-    it "'get_asg_by_name' should return type String" do
-      expect(iam_util.get_account_alias.class.to_s).to eq 'String'
+      it 'should return type String' do
+        expect(iam_util.get_account_alias.class.to_s).to eq 'String'
+      end
     end
   end
 
@@ -49,12 +51,14 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_alias' should return without an error" do
-      expect { iam_util.get_account_alias }.not_to raise_error
-    end
+    describe '#get_account_alias' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_alias }.not_to raise_error
+      end
 
-    it "'get_account_alias' should return nil" do
-      expect(iam_util.get_account_alias.nil?).to eq true
+      it 'should return nil' do
+        expect(iam_util.get_account_alias.nil?).to eq true
+      end
     end
   end
 
@@ -69,17 +73,19 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_summary' should return without an error" do
-      expect { iam_util.get_account_summary }.not_to raise_error
-    end
+    describe '#get_account_summary' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_summary }.not_to raise_error
+      end
 
-    it "'get_account_summary' return hash should have expected keys/values" do
-      expect(iam_util.get_account_summary['test_key_1']).to eq 1
-      expect(iam_util.get_account_summary['test_key_2']).to eq 2
-    end
+      it 'should return hash should have expected keys/values' do
+        expect(iam_util.get_account_summary['test_key_1']).to eq 1
+        expect(iam_util.get_account_summary['test_key_2']).to eq 2
+      end
 
-    it "'get_account_summary' return nil for key that doesn't exist" do
-      expect(iam_util.get_account_summary['test_key_3'].nil?).to eq true
+      it "should return nil for key that doesn't exist" do
+        expect(iam_util.get_account_summary['test_key_3'].nil?).to eq true
+      end
     end
   end
 
@@ -95,32 +101,40 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_summary' should return without an error" do
-      expect { iam_util.get_account_summary }.not_to raise_error
+    describe '#get_account_summary' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_summary }.not_to raise_error
+      end
     end
 
-    it "'root_user_has_api_key?' should return without an error" do
-      expect { iam_util.root_user_has_api_key? }.not_to raise_error
+    describe '#root_user_has_api_key?' do
+      it 'should return without an error' do
+        expect { iam_util.root_user_has_api_key? }.not_to raise_error
+      end
+
+      it 'should return false' do
+        expect(iam_util.root_user_has_api_key?).to eq false
+      end
     end
 
-    it "'root_user_has_api_key?' should return false" do
-      expect(iam_util.root_user_has_api_key?).to eq false
+    describe '#root_user_mfa_enabled?' do
+      it 'should return without an error' do
+        expect { iam_util.root_user_mfa_enabled? }.not_to raise_error
+      end
+
+      it 'should return false' do
+        expect(iam_util.root_user_mfa_enabled?).to eq false
+      end
     end
 
-    it "'root_user_mfa_enabled?' should return without an error" do
-      expect { iam_util.root_user_mfa_enabled? }.not_to raise_error
-    end
+    describe '#multiple_providers_configured?' do
+      it 'should return without an error' do
+        expect { iam_util.multiple_providers_configured? }.not_to raise_error
+      end
 
-    it "'root_user_mfa_enabled?' should return false" do
-      expect(iam_util.root_user_mfa_enabled?).to eq false
-    end
-
-    it "'multiple_providers_configured?' should return without an error" do
-      expect { iam_util.multiple_providers_configured? }.not_to raise_error
-    end
-
-    it "'multiple_providers_configured?' should return false" do
-      expect(iam_util.multiple_providers_configured?).to eq false
+      it 'should return false' do
+        expect(iam_util.multiple_providers_configured?).to eq false
+      end
     end
   end
 
@@ -136,32 +150,40 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_summary' should return without an error" do
-      expect { iam_util.get_account_summary }.not_to raise_error
+    describe '#get_account_summary' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_summary }.not_to raise_error
+      end
     end
 
-    it "'root_user_has_api_key?' should return without an error" do
-      expect { iam_util.root_user_has_api_key? }.not_to raise_error
+    describe '#root_user_has_api_key?' do
+      it 'should return without an error' do
+        expect { iam_util.root_user_has_api_key? }.not_to raise_error
+      end
+
+      it 'should return true' do
+        expect(iam_util.root_user_has_api_key?).to eq true
+      end
     end
 
-    it "'root_user_has_api_key?' should return true" do
-      expect(iam_util.root_user_has_api_key?).to eq true
+    describe '#root_user_mfa_enabled?' do
+      it 'should return without an error' do
+        expect { iam_util.root_user_mfa_enabled? }.not_to raise_error
+      end
+
+      it 'should return true' do
+        expect(iam_util.root_user_mfa_enabled?).to eq true
+      end
     end
 
-    it "'root_user_mfa_enabled?' should return without an error" do
-      expect { iam_util.root_user_mfa_enabled? }.not_to raise_error
-    end
+    describe '#multiple_providers_configured?' do
+      it 'should return without an error' do
+        expect { iam_util.multiple_providers_configured? }.not_to raise_error
+      end
 
-    it "'root_user_mfa_enabled?' should return true" do
-      expect(iam_util.root_user_mfa_enabled?).to eq true
-    end
-
-    it "'multiple_providers_configured?' should return without an error" do
-      expect { iam_util.multiple_providers_configured? }.not_to raise_error
-    end
-
-    it "'multiple_providers_configured?' should return true" do
-      expect(iam_util.multiple_providers_configured?).to eq true
+      it 'should return true' do
+        expect(iam_util.multiple_providers_configured?).to eq true
+      end
     end
   end
 
@@ -173,21 +195,24 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_saml_providers' should return without an error" do
-      expect { iam_util.get_saml_providers }.not_to raise_error
+    describe '#get_saml_providers' do
+      it 'should return without an error' do
+        expect { iam_util.get_saml_providers }.not_to raise_error
+      end
+
+      it 'should return empty array' do
+        expect(iam_util.get_saml_providers.empty?).to eq true
+      end
     end
 
-    it "'get_saml_providers should return empty array" do
-      puts iam_util.get_saml_providers
-      expect(iam_util.get_saml_providers.empty?).to eq true
-    end
+    describe '#cornell_provider_configured?' do
+      it 'should return without an error' do
+        expect { iam_util.cornell_provider_configured? }.not_to raise_error
+      end
 
-    it "'cornell_provider_configured?' should return without an error" do
-      expect { iam_util.cornell_provider_configured? }.not_to raise_error
-    end
-
-    it "'cornell_provider_configured?' should return false" do
-      expect(iam_util.cornell_provider_configured?).to eq false
+      it 'should return false' do
+        expect(iam_util.cornell_provider_configured?).to eq false
+      end
     end
   end
 
@@ -213,20 +238,24 @@ describe Cucloud::IamUtils do
       # rubocop:enable Metrics/LineLength
     end
 
-    it "'get_saml_providers' should return without an error" do
-      expect { iam_util.get_saml_providers }.not_to raise_error
+    describe '#get_saml_providers' do
+      it 'should return without an error' do
+        expect { iam_util.get_saml_providers }.not_to raise_error
+      end
+
+      it 'should return non-empty array' do
+        expect(iam_util.get_saml_providers.empty?).to eq false
+      end
     end
 
-    it "'get_saml_providers' should return non-empty array" do
-      expect(iam_util.get_saml_providers.empty?).to eq false
-    end
+    describe '#cornell_provider_configured?' do
+      it 'should return without an error' do
+        expect { iam_util.cornell_provider_configured? }.not_to raise_error
+      end
 
-    it "'cornell_provider_configured?' should return without an error" do
-      expect { iam_util.cornell_provider_configured? }.not_to raise_error
-    end
-
-    it "'cornell_provider_configured?' should return true" do
-      expect(iam_util.cornell_provider_configured?).to eq true
+      it 'should return true' do
+        expect(iam_util.cornell_provider_configured?).to eq true
+      end
     end
   end
 
@@ -251,20 +280,24 @@ describe Cucloud::IamUtils do
       # rubocop:enable Metrics/LineLength
     end
 
-    it "'get_saml_providers' should return without an error" do
-      expect { iam_util.get_saml_providers }.not_to raise_error
+    describe '#get_saml_providers' do
+      it 'should return without an error' do
+        expect { iam_util.get_saml_providers }.not_to raise_error
+      end
+
+      it 'should return non-empty array' do
+        expect(iam_util.get_saml_providers.empty?).to eq false
+      end
     end
 
-    it "'get_saml_providers' should return non-empty array" do
-      expect(iam_util.get_saml_providers.empty?).to eq false
-    end
+    describe '#cornell_provider_configured?' do
+      it 'should return without an error' do
+        expect { iam_util.cornell_provider_configured? }.not_to raise_error
+      end
 
-    it "'cornell_provider_configured?' should return without an error" do
-      expect { iam_util.cornell_provider_configured? }.not_to raise_error
-    end
-
-    it "'cornell_provider_configured?' should return false" do
-      expect(iam_util.cornell_provider_configured?).to eq false
+      it 'should return false' do
+        expect(iam_util.cornell_provider_configured?).to eq false
+      end
     end
   end
 
@@ -276,12 +309,14 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_users' should return without an error" do
-      expect { iam_util.get_users }.not_to raise_error
-    end
+    describe '#get_users' do
+      it 'should return without an error' do
+        expect { iam_util.get_users }.not_to raise_error
+      end
 
-    it "'get_users' should return empty array" do
-      expect(iam_util.get_users.empty?).to eq true
+      it 'should return empty array' do
+        expect(iam_util.get_users.empty?).to eq true
+      end
     end
   end
 
@@ -297,8 +332,10 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'user_has_password?' should return true" do
-      expect(iam_util.user_has_password?('test-user')).to eq true
+    describe '#user_has_password?' do
+      it 'should return true' do
+        expect(iam_util.user_has_password?('test-user')).to eq true
+      end
     end
   end
 
@@ -310,8 +347,10 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'user_has_password?' should return false" do
-      expect(iam_util.user_has_password?('test-user')).to eq false
+    describe '#user_has_password?' do
+      it 'should return false' do
+        expect(iam_util.user_has_password?('test-user')).to eq false
+      end
     end
   end
 
@@ -352,26 +391,28 @@ describe Cucloud::IamUtils do
         )
       end
 
-      it "'get_users' should return without an error" do
-        expect { iam_util.get_users }.not_to raise_error
-      end
+      describe '#get_users' do
+        it 'should return without an error' do
+          expect { iam_util.get_users }.not_to raise_error
+        end
 
-      it "'get_users' should return non-empty array" do
-        expect(iam_util.get_users.empty?).to eq false
-      end
+        it 'should return non-empty array' do
+          expect(iam_util.get_users.empty?).to eq false
+        end
 
-      it "'get_users' should return user struct values for each array element" do
-        expect(iam_util.get_users[0][:base_data].path).to eq 'test-path-1'
-        expect(iam_util.get_users[0][:base_data].user_name).to eq 'test-user-1'
-        expect(iam_util.get_users[0][:base_data].user_id).to eq 'test-id-1'
-        expect(iam_util.get_users[1][:base_data].path).to eq 'test-path-2'
-        expect(iam_util.get_users[1][:base_data].user_name).to eq 'test-user-2'
-        expect(iam_util.get_users[1][:base_data].user_id).to eq 'test-id-2'
-      end
+        it 'should return user struct values for each array element' do
+          expect(iam_util.get_users[0][:base_data].path).to eq 'test-path-1'
+          expect(iam_util.get_users[0][:base_data].user_name).to eq 'test-user-1'
+          expect(iam_util.get_users[0][:base_data].user_id).to eq 'test-id-1'
+          expect(iam_util.get_users[1][:base_data].path).to eq 'test-path-2'
+          expect(iam_util.get_users[1][:base_data].user_name).to eq 'test-user-2'
+          expect(iam_util.get_users[1][:base_data].user_id).to eq 'test-id-2'
+        end
 
-      it "'get_users' has_password key should be true" do
-        expect(iam_util.get_users[0][:has_password]).to eq true
-        expect(iam_util.get_users[1][:has_password]).to eq true
+        it 'has_password key should be true' do
+          expect(iam_util.get_users[0][:has_password]).to eq true
+          expect(iam_util.get_users[1][:has_password]).to eq true
+        end
       end
     end
 
@@ -383,26 +424,28 @@ describe Cucloud::IamUtils do
         )
       end
 
-      it "'get_users' should return without an error" do
-        expect { iam_util.get_users }.not_to raise_error
-      end
+      describe '#get_users' do
+        it 'should return without an error' do
+          expect { iam_util.get_users }.not_to raise_error
+        end
 
-      it "'get_users' should return non-empty array" do
-        expect(iam_util.get_users.empty?).to eq false
-      end
+        it 'should return non-empty array' do
+          expect(iam_util.get_users.empty?).to eq false
+        end
 
-      it "'get_users' should return user struct values for each array element" do
-        expect(iam_util.get_users[0][:base_data].path).to eq 'test-path-1'
-        expect(iam_util.get_users[0][:base_data].user_name).to eq 'test-user-1'
-        expect(iam_util.get_users[0][:base_data].user_id).to eq 'test-id-1'
-        expect(iam_util.get_users[1][:base_data].path).to eq 'test-path-2'
-        expect(iam_util.get_users[1][:base_data].user_name).to eq 'test-user-2'
-        expect(iam_util.get_users[1][:base_data].user_id).to eq 'test-id-2'
-      end
+        it 'should return user struct values for each array element' do
+          expect(iam_util.get_users[0][:base_data].path).to eq 'test-path-1'
+          expect(iam_util.get_users[0][:base_data].user_name).to eq 'test-user-1'
+          expect(iam_util.get_users[0][:base_data].user_id).to eq 'test-id-1'
+          expect(iam_util.get_users[1][:base_data].path).to eq 'test-path-2'
+          expect(iam_util.get_users[1][:base_data].user_name).to eq 'test-user-2'
+          expect(iam_util.get_users[1][:base_data].user_id).to eq 'test-id-2'
+        end
 
-      it "'get_users' has_password key should be false" do
-        expect(iam_util.get_users[0][:has_password]).to eq false
-        expect(iam_util.get_users[1][:has_password]).to eq false
+        it 'has_password key should be false' do
+          expect(iam_util.get_users[0][:has_password]).to eq false
+          expect(iam_util.get_users[1][:has_password]).to eq false
+        end
       end
     end
   end
@@ -415,12 +458,14 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_user_access_keys' should return without an error" do
-      expect { iam_util.get_user_access_keys('test-user') }.not_to raise_error
-    end
+    describe '#get_user_access_keys' do
+      it 'should return without an error' do
+        expect { iam_util.get_user_access_keys('test-user') }.not_to raise_error
+      end
 
-    it "'get_user_access_keys' should return empty array" do
-      expect(iam_util.get_user_access_keys('test-user').empty?).to eq true
+      it 'should return empty array' do
+        expect(iam_util.get_user_access_keys('test-user').empty?).to eq true
+      end
     end
   end
 
@@ -480,49 +525,53 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_user_access_keys' should return without an error" do
-      expect { iam_util.get_user_access_keys('test-user') }.not_to raise_error
+    describe '#get_user_access_keys' do
+      it 'should return without an error' do
+        expect { iam_util.get_user_access_keys('test-user') }.not_to raise_error
+      end
+
+      it 'should return non-empty array' do
+        expect(iam_util.get_user_access_keys('test-user').empty?).to eq false
+      end
+
+      it 'should have original respone data in base_data key' do
+        expect(iam_util.get_user_access_keys('test-user')[0][:base_data].user_name).to eq 'test-user'
+        expect(iam_util.get_user_access_keys('test-user')[0][:base_data].access_key_id).to eq 'test-key-1'
+        expect(iam_util.get_user_access_keys('test-user')[0][:base_data].status).to eq 'Active'
+        expect(iam_util.get_user_access_keys('test-user')[1][:base_data].user_name).to eq 'test-user'
+        expect(iam_util.get_user_access_keys('test-user')[1][:base_data].access_key_id).to eq 'test-key-2'
+        expect(iam_util.get_user_access_keys('test-user')[1][:base_data].status).to eq 'Inactive'
+        expect(iam_util.get_user_access_keys('test-user')[2][:base_data].user_name).to eq 'test-user'
+        expect(iam_util.get_user_access_keys('test-user')[2][:base_data].access_key_id).to eq 'test-key-3'
+        expect(iam_util.get_user_access_keys('test-user')[2][:base_data].status).to eq 'Active'
+        expect(iam_util.get_user_access_keys('test-user')[3][:base_data].user_name).to eq 'test-user'
+        expect(iam_util.get_user_access_keys('test-user')[3][:base_data].access_key_id).to eq 'test-key-4'
+        expect(iam_util.get_user_access_keys('test-user')[3][:base_data].status).to eq 'Active'
+      end
+
+      it 'key age should calculate correctly' do
+        expect(iam_util.get_user_access_keys('test-user')[0][:days_old]).to eq 60
+        expect(iam_util.get_user_access_keys('test-user')[1][:days_old]).to eq 90
+        expect(iam_util.get_user_access_keys('test-user')[2][:days_old]).to eq 120
+        expect(iam_util.get_user_access_keys('test-user')[3][:days_old]).to eq 150
+      end
+
+      it 'active boolean should calculate correctly' do
+        expect(iam_util.get_user_access_keys('test-user')[0][:active]).to eq true
+        expect(iam_util.get_user_access_keys('test-user')[1][:active]).to eq false
+        expect(iam_util.get_user_access_keys('test-user')[2][:active]).to eq true
+        expect(iam_util.get_user_access_keys('test-user')[3][:active]).to eq true
+      end
     end
 
-    it "'get_user_access_keys' should return non-empty array" do
-      expect(iam_util.get_user_access_keys('test-user').empty?).to eq false
-    end
+    describe '#get_active_keys_older_than_n_days' do
+      it 'should return without an error' do
+        expect { iam_util.get_active_keys_older_than_n_days(80) }.not_to raise_error
+      end
 
-    it "'get_user_access_keys' should have original respone data in base_data key" do
-      expect(iam_util.get_user_access_keys('test-user')[0][:base_data].user_name).to eq 'test-user'
-      expect(iam_util.get_user_access_keys('test-user')[0][:base_data].access_key_id).to eq 'test-key-1'
-      expect(iam_util.get_user_access_keys('test-user')[0][:base_data].status).to eq 'Active'
-      expect(iam_util.get_user_access_keys('test-user')[1][:base_data].user_name).to eq 'test-user'
-      expect(iam_util.get_user_access_keys('test-user')[1][:base_data].access_key_id).to eq 'test-key-2'
-      expect(iam_util.get_user_access_keys('test-user')[1][:base_data].status).to eq 'Inactive'
-      expect(iam_util.get_user_access_keys('test-user')[2][:base_data].user_name).to eq 'test-user'
-      expect(iam_util.get_user_access_keys('test-user')[2][:base_data].access_key_id).to eq 'test-key-3'
-      expect(iam_util.get_user_access_keys('test-user')[2][:base_data].status).to eq 'Active'
-      expect(iam_util.get_user_access_keys('test-user')[3][:base_data].user_name).to eq 'test-user'
-      expect(iam_util.get_user_access_keys('test-user')[3][:base_data].access_key_id).to eq 'test-key-4'
-      expect(iam_util.get_user_access_keys('test-user')[3][:base_data].status).to eq 'Active'
-    end
-
-    it "'get_user_access_keys' key age should calculate correctly" do
-      expect(iam_util.get_user_access_keys('test-user')[0][:days_old]).to eq 60
-      expect(iam_util.get_user_access_keys('test-user')[1][:days_old]).to eq 90
-      expect(iam_util.get_user_access_keys('test-user')[2][:days_old]).to eq 120
-      expect(iam_util.get_user_access_keys('test-user')[3][:days_old]).to eq 150
-    end
-
-    it "'get_user_access_keys' active boolean should calculate correctly" do
-      expect(iam_util.get_user_access_keys('test-user')[0][:active]).to eq true
-      expect(iam_util.get_user_access_keys('test-user')[1][:active]).to eq false
-      expect(iam_util.get_user_access_keys('test-user')[2][:active]).to eq true
-      expect(iam_util.get_user_access_keys('test-user')[3][:active]).to eq true
-    end
-
-    it "'get_active_keys_older_than_n_days' should return without an error" do
-      expect { iam_util.get_active_keys_older_than_n_days(80) }.not_to raise_error
-    end
-
-    it "'get_active_keys_older_than_n_days' return 4 keys over 90 days old" do
-      expect(iam_util.get_active_keys_older_than_n_days(80).length).to eq 4
+      it 'should return 4 keys over 90 days old' do
+        expect(iam_util.get_active_keys_older_than_n_days(80).length).to eq 4
+      end
     end
   end
 
@@ -545,107 +594,111 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'get_account_password_policy' should return without an error" do
-      expect { iam_util.get_account_password_policy }.not_to raise_error
+    describe '#get_account_password_policy' do
+      it 'should return without an error' do
+        expect { iam_util.get_account_password_policy }.not_to raise_error
+      end
+
+      it 'should have values of return' do
+        expect(iam_util.get_account_password_policy.minimum_password_length).to eq 20
+        expect(iam_util.get_account_password_policy.require_symbols).to eq false
+        expect(iam_util.get_account_password_policy.require_numbers).to eq true
+        expect(iam_util.get_account_password_policy.require_uppercase_characters).to eq true
+      end
     end
 
-    it "'get_account_password_policy' should have values of return" do
-      expect(iam_util.get_account_password_policy.minimum_password_length).to eq 20
-      expect(iam_util.get_account_password_policy.require_symbols).to eq false
-      expect(iam_util.get_account_password_policy.require_numbers).to eq true
-      expect(iam_util.get_account_password_policy.require_uppercase_characters).to eq true
-    end
+    describe '#audit_password_policy' do
+      it 'should return without an error' do
+        expect { iam_util.audit_password_policy }.not_to raise_error
+      end
 
-    it "'audit_password_policy' should return without an error" do
-      expect { iam_util.audit_password_policy }.not_to raise_error
-    end
+      it 'should return expected results to example test' do
+        audit_example = [
+          {
+            key: 'minimum_password_length',
+            operator: 'GTE',
+            value: 15
+          },
+          {
+            operator: 'EQ',
+            key: 'require_symbols',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_numbers',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_uppercase_characters',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_lowercase_characters',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'allow_users_to_change_password',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'expire_passwords',
+            value: true
+          },
+          {
+            operator: 'LTE',
+            key: 'max_password_age',
+            value: 10
+          },
+          {
+            operator: 'LTE',
+            key: 'password_reuse_prevention',
+            value: 3
+          },
+          {
+            operator: 'EQ',
+            key: 'hard_expiry',
+            value: true
+          }
+        ]
 
-    it "'audit_password_policy' should return expected results to example test" do
-      audit_example = [
-        {
-          key: 'minimum_password_length',
-          operator: 'GTE',
-          value: 15
-        },
-        {
-          operator: 'EQ',
-          key: 'require_symbols',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_numbers',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_uppercase_characters',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_lowercase_characters',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'allow_users_to_change_password',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'expire_passwords',
-          value: true
-        },
-        {
-          operator: 'LTE',
-          key: 'max_password_age',
-          value: 10
-        },
-        {
-          operator: 'LTE',
-          key: 'password_reuse_prevention',
-          value: 3
-        },
-        {
-          operator: 'EQ',
+        expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[1][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[2][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[3][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[4][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[5][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[6][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[7][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[8][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
+      end
+
+      it 'should throw UnknownComparisonOperatorError exception on unknown operator' do
+        test_audit = [{
+          operator: 'EQQ',
           key: 'hard_expiry',
           value: true
-        }
-      ]
+        }]
 
-      expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[1][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[2][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[3][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[4][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[5][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[6][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[7][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[8][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
-    end
+        expect do
+          iam_util.audit_password_policy(test_audit)
+        end.to raise_error(Cucloud::IamUtils::UnknownComparisonOperatorError)
+      end
 
-    it "'audit_password_policy' should throw UnknownComparisonOperatorError exception on unknown operator" do
-      test_audit = [{
-        operator: 'EQQ',
-        key: 'hard_expiry',
-        value: true
-      }]
+      it 'should fail test if key not found' do
+        audit_example = [{
+          operator: 'EQ',
+          key: 'hard_expiryy',
+          value: true
+        }]
 
-      expect do
-        iam_util.audit_password_policy(test_audit)
-      end.to raise_error(Cucloud::IamUtils::UnknownComparisonOperatorError)
-    end
-
-    it "'audit_password_policy' should fail test if key not found" do
-      audit_example = [{
-        operator: 'EQ',
-        key: 'hard_expiryy',
-        value: true
-      }]
-
-      expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
+      end
     end
   end
 
@@ -668,74 +721,76 @@ describe Cucloud::IamUtils do
       )
     end
 
-    it "'audit_password_policy' should return without an error" do
-      expect { iam_util.audit_password_policy }.not_to raise_error
-    end
+    describe '#audit_password_policy' do
+      it 'should return without an error' do
+        expect { iam_util.audit_password_policy }.not_to raise_error
+      end
 
-    it "'audit_password_policy' should fail tests where policy value is nil" do
-      audit_example = [
-        {
-          key: 'minimum_password_length',
-          operator: 'GTE',
-          value: 15
-        },
-        {
-          operator: 'EQ',
-          key: 'require_symbols',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_numbers',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_uppercase_characters',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'require_lowercase_characters',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'allow_users_to_change_password',
-          value: true
-        },
-        {
-          operator: 'EQ',
-          key: 'expire_passwords',
-          value: true
-        },
-        {
-          operator: 'LTE',
-          key: 'max_password_age',
-          value: 10
-        },
-        {
-          operator: 'LTE',
-          key: 'password_reuse_prevention',
-          value: 3
-        },
-        {
-          operator: 'EQ',
-          key: 'hard_expiry',
-          value: true
-        }
-      ]
+      it 'should fail tests where policy value is nil' do
+        audit_example = [
+          {
+            key: 'minimum_password_length',
+            operator: 'GTE',
+            value: 15
+          },
+          {
+            operator: 'EQ',
+            key: 'require_symbols',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_numbers',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_uppercase_characters',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'require_lowercase_characters',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'allow_users_to_change_password',
+            value: true
+          },
+          {
+            operator: 'EQ',
+            key: 'expire_passwords',
+            value: true
+          },
+          {
+            operator: 'LTE',
+            key: 'max_password_age',
+            value: 10
+          },
+          {
+            operator: 'LTE',
+            key: 'password_reuse_prevention',
+            value: 3
+          },
+          {
+            operator: 'EQ',
+            key: 'hard_expiry',
+            value: true
+          }
+        ]
 
-      expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[1][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[2][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[3][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[4][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[5][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[6][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[7][:passes]).to eq false
-      expect(iam_util.audit_password_policy(audit_example)[8][:passes]).to eq true
-      expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[0][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[1][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[2][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[3][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[4][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[5][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[6][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[7][:passes]).to eq false
+        expect(iam_util.audit_password_policy(audit_example)[8][:passes]).to eq true
+        expect(iam_util.audit_password_policy(audit_example)[9][:passes]).to eq true
+      end
     end
   end
 end
