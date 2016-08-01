@@ -62,21 +62,20 @@ module Cucloud
     def audit_password_policy(audit_criteria = [])
       policy_hash = get_account_password_policy.to_h
 
-      audit_array = []
-      audit_criteria.each do |check|
+      audit_criteria.map do |check|
         case check[:operator]
         when 'EQ'
-          audit_array << {
+          {
             key: check[:key],
             passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] == check[:value]
           }
         when 'LTE'
-          audit_array << {
+          {
             key: check[:key],
             passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] <= check[:value]
           }
         when 'GTE'
-          audit_array << {
+          {
             key: check[:key],
             passes: policy_hash[check[:key].to_sym].nil? ? false : policy_hash[check[:key].to_sym] >= check[:value]
           }
@@ -84,8 +83,6 @@ module Cucloud
           raise UnknownComparisonOperatorError.new, "Unknown operator #{check[:operator]}"
         end
       end
-
-      audit_array
     end
 
     # Get SAML providers configured for this account
@@ -95,15 +92,12 @@ module Cucloud
       # returns https://docs.aws.amazon.com/sdkforruby/api/Aws/IAM/Types/SAMLProviderListEntry.html
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/IAM/Client.html#get_saml_provider-instance_method
 
-      provider_array = []
-      @iam.list_saml_providers.saml_provider_list.each do |provider|
-        provider_array << {
+      @iam.list_saml_providers.saml_provider_list.map do |provider|
+        {
           arn: provider.arn,
           saml_metadata_document: @iam.get_saml_provider(saml_provider_arn: provider.arn).saml_metadata_document
         }
       end
-
-      provider_array
     end
 
     # Is the Cornell SAML Identity Provider configured on this account?
@@ -116,14 +110,12 @@ module Cucloud
     # @return [Array<Hash>] Array of user hashes - base user type + added lookups for convenience
     def get_users
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/IAM/Client.html#list_users-instance_method
-      user_array = []
-      @iam.list_users.users.each do |user|
-        user_array << {
+      @iam.list_users.users.map do |user|
+        {
           base_data: user, # https://docs.aws.amazon.com/sdkforruby/api/Aws/IAM/Types/User.html
           has_password: user_has_password?(user.user_name)
         }
       end
-      user_array
     end
 
     # Does this user have a password configured?
@@ -147,28 +139,23 @@ module Cucloud
     # @return [Array<Hash>] Array of key hashes - base key data + helper calculations for key age and active/inactive
     def get_user_access_keys(user_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/IAM/Client.html#list_access_keys-instance_method
-      keys = []
-      @iam.list_access_keys(user_name: user_name).access_key_metadata.each do |key|
-        keys << {
+
+      @iam.list_access_keys(user_name: user_name).access_key_metadata.map do |key|
+        {
           base_data: key,
           active: key.status == 'Active',
           days_old: (Time.now - key.create_date).to_i / (24 * 60 * 60)
         }
       end
-
-      keys
     end
 
     # Get active access keys on account that are older than specified age (in days)
     # @param [Integer] Days old
     # @return [Array<Hash>]
     def get_active_keys_older_than_n_days(n)
-      keys = []
-      get_users.each do |user|
-        keys << get_user_access_keys(user[:base_data].user_name).select { |k| k[:days_old] > n && k[:active] }
-      end
-
-      keys.flatten
+      get_users.map do |user|
+        get_user_access_keys(user[:base_data].user_name).select { |k| k[:days_old] > n && k[:active] }
+      end.flatten
     end
   end
 end

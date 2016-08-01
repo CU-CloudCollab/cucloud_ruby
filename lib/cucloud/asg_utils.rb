@@ -26,8 +26,7 @@ module Cucloud
     # @return [Aws::AutoScaling::Types::LaunchConfiguration] AWS SDK Launch Configuration struct
     def get_launch_configuration_by_name(launch_config_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/AutoScaling/Client.html#describe_launch_configurations-instance_method
-      lc_desc = @asg.describe_launch_configurations(launch_configuration_names: [launch_config_name])
-      lc_desc.launch_configurations[0]
+      @asg.describe_launch_configurations(launch_configuration_names: [launch_config_name]).first
     end
 
     # Generate a hash that can be submitted when creating a new launch config - replace image with desired AMI
