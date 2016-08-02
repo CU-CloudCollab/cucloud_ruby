@@ -68,6 +68,13 @@ module Cucloud
       ).evaluation_results.first
     end
 
+    # Are all recorders active and logging data in this region
+    # @return [Boolean]
+    def recorder_active?
+      @cs.describe_configuration_recorder_status({})
+         .configuration_recorders_status.find { |x| !x.recording || x.last_status != 'SUCCESS' }.nil?
+    end
+
     # Is this rule active?
     # @param [Aws::ConfigService::Types::ConfigRule] Rule
     # @return [Boolean]
