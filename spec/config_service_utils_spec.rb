@@ -420,6 +420,46 @@ describe Cucloud::ConfigServiceUtils do
     end
   end
 
+  context 'while describe_configuration_recorder_status is stubbed out and recorder is active' do
+    before do
+      cs_client.stub_responses(
+        :describe_configuration_recorder_status,
+        configuration_recorders_status: [
+          {
+            recording: true,
+            last_status: 'SUCCESS'
+          }
+        ]
+      )
+    end
+
+    describe '#recorder_active?' do
+      it 'should return ture' do
+        expect(cs_util.recorder_active?).to be true
+      end
+    end
+  end
+
+  context 'while describe_configuration_recorder_status is stubbed out and recorder is active' do
+    before do
+      cs_client.stub_responses(
+        :describe_configuration_recorder_status,
+        configuration_recorders_status: [
+          {
+            recording: false,
+            last_status: 'SUCCESS'
+          }
+        ]
+      )
+    end
+
+    describe '#recorder_active?' do
+      it 'should return ture' do
+        expect(cs_util.recorder_active?).to be false
+      end
+    end
+  end
+
   context 'while get_compliance_details_by_config_rule is stubbed out with NON-compliant response' do
     before do
       cs_client.stub_responses(
