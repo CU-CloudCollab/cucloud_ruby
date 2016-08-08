@@ -19,3 +19,6 @@ Metrics/PerceivedComplexity:
 # disable get/set warnings - many of our methods are performing API calls and get_ seems appropriate naming
 Style/AccessorMethodName:
   Enabled: false
+
+Metrics/ClassLength:
+  Max: 200
