@@ -126,6 +126,10 @@ describe Cucloud::Ec2Utils do
       ec_util.backup_volumes_unless_recent_backup
     end
 
+    it "should create an ebs snapshot" do
+      expect {ec_util.create_ebs_snapshot('i-1', 'desc')}.not_to raise_error
+    end
+
     it 'should get nil for the instance name tag for i-2' do
       ec2_client.stub_responses(
         :describe_instances,
