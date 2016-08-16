@@ -120,14 +120,16 @@ describe Cucloud::Ec2Utils do
       expect(volumes['vol-def']).to be_nil
     end
 
-    it 'should backup volues that done have a recent snapshot' do
-      expect(ec_util).to receive(:create_ebs_snapshot)
-        .with('vol-def', anything, [{ key: 'Instance Name', value: 'example-1' }])
-      ec_util.backup_volumes_unless_recent_backup
+    it 'should backup volumes that do not have a recent snapshot' do
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup
+      expect(snapshots_created[0][:snapshot_id]).to eq 'snap-def'
+      expect(snapshots_created[0][:instance_name]).to eq 'example-1'
+      expect(snapshots_created[0][:volume]).to eq 'vol-def'
     end
 
     it 'should create an ebs snapshot' do
-      expect { ec_util.create_ebs_snapshot('i-1', 'desc') }.not_to raise_error
+      snapshots_created = ec_util.create_ebs_snapshot('i-1', 'desc')
+      expect(snapshots_created[:snapshot_id]).to eq 'snap-def'
     end
 
     it 'should get nil for the instance name tag for i-2' do

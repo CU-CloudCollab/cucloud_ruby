@@ -177,18 +177,27 @@ module Cucloud
 
     # Preforms a backup on volumes that do not have a recent snapshot_info
     # @param days [Integer] defaults to 5
+    # @return [Array<Hash>]  An array of hashes containing snapshot_id, instance_name and volume
     def backup_volumes_unless_recent_backup(days = 5)
       volumes_backed_up_recently = volumes_with_snapshot_within_last_days(days)
+      snapshots_created = []
 
       volumes = @ec2.describe_volumes(filters: [{ name: 'attachment.status', values: ['attached'] }])
       volumes.volumes.each do |volume|
         next if volumes_backed_up_recently[volume.volume_id.to_s]
-        puts "backing up #{volume.volume_id}"
-        instance_name =  get_instance_name(volume.attachments[0].instance_id)
+        instance_name = get_instance_name(volume.attachments[0].instance_id)
 
         tags = instance_name ? [{ key: 'Instance Name', value: instance_name }] : []
-        create_ebs_snapshot(volume.volume_id, 'auto-ebs-snap-' + Time.now.strftime('%Y-%m-%d-%H:%M:%S'), tags)
+        snapshot_info = create_ebs_snapshot(volume.volume_id,
+                                            'auto-ebs-snap-' + Time.now.strftime('%Y-%m-%d-%H:%M:%S'),
+                                            tags)
+
+        snapshots_created.push(snapshot_id: snapshot_info.snapshot_id,
+                               instance_name: instance_name,
+                               volume: volume.volume_id)
       end
+
+      snapshots_created
     end
 
     # Find volumes that have a recent snapshot
