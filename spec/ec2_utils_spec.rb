@@ -36,6 +36,42 @@ describe Cucloud::Ec2Utils do
           ]
         }]
       )
+
+      ec2_client.stub_responses(
+        :describe_snapshots,
+        snapshots: [
+          { snapshot_id: 'snap-abc',
+            start_time: Time.now - (Cucloud::Ec2Utils::SECONDS_IN_A_DAY * 4),
+            state: 'completed',
+            owner_id: '123456789012',
+            volume_id: 'vol-abc' },
+          { snapshot_id: 'snap-def',
+            start_time: Time.now - (Cucloud::Ec2Utils::SECONDS_IN_A_DAY * 10),
+            state: 'completed',
+            owner_id: '123456789012',
+            volume_id: 'vol-def' }
+        ]
+      )
+
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-abc' },
+          { volume_id: 'vol-def',
+            attachments: [
+              instance_id: 'i-1'
+            ] }
+        ]
+      )
+
+      ec2_client.stub_responses(
+        :create_snapshot,
+        snapshot_id: 'snap-def'
+      )
+
+      ec2_client.stub_responses(
+        :create_tags, {}
+      )
     end
 
     it '.new default optional should be successful' do
@@ -58,8 +94,8 @@ describe Cucloud::Ec2Utils do
       expect { ec_util.start_instances_by_tag('Name', ['example-1']) }.not_to raise_error
     end
 
-    it "should 'get_instance' and the instance id should eq i-1" do
-      expect(ec_util.get_instance('i-1').reservations[0].instances[0].instance_id.to_s).to eq 'i-1'
+    it "should 'get_instance_information' and the instance id should eq i-1" do
+      expect(ec_util.get_instance_information('i-1').reservations[0].instances[0].instance_id.to_s).to eq 'i-1'
     end
 
     it "should 'start_instance' without an error" do
@@ -72,6 +108,42 @@ describe Cucloud::Ec2Utils do
 
     it "should 'reboot_instance' without an error" do
       expect { ec_util.reboot_instance('i-1') }.not_to raise_error
+    end
+
+    it 'should get the instance name tag for i-1' do
+      expect(ec_util.get_instance_name('i-1')).to eq 'example-1'
+    end
+
+    it 'should find volumes that have no shapshots in the last five days (default)' do
+      volumes = ec_util.volumes_with_snapshot_within_last_days
+      expect(volumes['vol-abc']).to be true
+      expect(volumes['vol-def']).to be_nil
+    end
+
+    it 'should backup volumes that do not have a recent snapshot' do
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup
+      expect(snapshots_created[0][:snapshot_id]).to eq 'snap-def'
+      expect(snapshots_created[0][:instance_name]).to eq 'example-1'
+      expect(snapshots_created[0][:volume]).to eq 'vol-def'
+    end
+
+    it 'should create an ebs snapshot' do
+      snapshots_created = ec_util.create_ebs_snapshot('i-1', 'desc')
+      expect(snapshots_created[:snapshot_id]).to eq 'snap-def'
+    end
+
+    it 'should get nil for the instance name tag for i-2' do
+      ec2_client.stub_responses(
+        :describe_instances,
+        next_token: nil,
+        reservations: [{
+          instances: [
+            { instance_id: 'i-2',
+              state: { name: 'running' } }
+          ]
+        }]
+      )
+      expect(ec_util.get_instance_name('i-2')).to be_nil
     end
 
     describe '#instances_to_patch_by_tag' do

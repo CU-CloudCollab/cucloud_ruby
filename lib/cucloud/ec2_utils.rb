@@ -3,16 +3,33 @@ module Cucloud
   class Ec2Utils
     # This is the command sent to ubuntu for patching
     UBUNTU_PATCH_COMMAND = 'apt-get update; apt-get -y upgrade; reboot'.freeze
-    # THis is the command sent to amazon linux machines for patching
+    # This is the command sent to amazon linux machines for patching
     AMAZON_PATCH_COMMAND = 'yum update -y; reboot & disown '.freeze
+    # Used in time calculations
+    SECONDS_IN_A_DAY = 86_400
+    # Max attemps for a waiter to try
+    WAITER_MAX_ATTEMPS = 240
+    # Delay between calls used by waiter to check status
+    WAITER_DELAY = 15
 
     def initialize(ec2_client = Aws::EC2::Client.new, ssm_utils = Cucloud::SSMUtils.new)
       @ec2 = ec2_client
       @ssm_utils = ssm_utils
     end
 
+    # Get instnace object
+    # @param instance_id [String] instance id in the format of i-121231231231
+    # @return [Aws::EC2::Instance] Object represneting the intance see
+    # http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Instance.html
+    def get_instance(instance_id)
+      Aws::EC2::Instance.new(id: instance_id, client: @ec2)
+    end
+
     # Get instance information for a specific instance
-    def get_instance(instance)
+    # @param instance [String] instance id in the format of i-121231231231
+    # @return [array] aws reservations see
+    #  http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#describe_instances-instance_method
+    def get_instance_information(instance)
       @ec2.describe_instances(instance_ids: [instance])
     end
 
@@ -124,6 +141,78 @@ module Cucloud
       @ssm_utils.send_patch_command(amazon_patch_instances, AMAZON_PATCH_COMMAND) if amazon_patch_instances.any?
 
       all_instances
+    end
+
+    # Get the nice name of the ec2 intsance from the 'Name" tag'
+    # @param instance_id [String] instance id in the format of i-121231231231
+    # @return [String] Name of instacnce if found or nil if not found
+    def get_instance_name(instance_id)
+      instance = get_instance(instance_id)
+      tag_name = instance.tags.find { |tag| tag.key.eql?('Name') }
+      tag_name ? tag_name.value : nil
+    end
+
+    # Create a snapshot of an EBS volume and apply supplied tags
+    # will wait 20 minutes for the process to completed
+    # @param volume_id [String] volume id in the formate of vol-121231231231
+    # @param snapshot_desc [String] Description of the snapshot
+    # @param tags [Array] Array of key value pairs to be applied as tags to the snapshot
+    # @return snapshot information see
+    # http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#create_tags-instance_method
+    def create_ebs_snapshot(volume_id, snapshot_desc, tags = [])
+      snapshot_info = @ec2.create_snapshot(
+        volume_id: volume_id,
+        description: snapshot_desc
+      )
+
+      @ec2.wait_until(:snapshot_completed, snapshot_ids: [snapshot_info.snapshot_id]) do |w|
+        w.max_attempts = WAITER_MAX_ATTEMPS
+        w.delay = WAITER_DELAY
+      end
+
+      @ec2.create_tags(resources: [snapshot_info.snapshot_id], tags: tags) unless tags.empty?
+
+      snapshot_info
+    end
+
+    # Preforms a backup on volumes that do not have a recent snapshot_info
+    # @param days [Integer] defaults to 5
+    # @return [Array<Hash>]  An array of hashes containing snapshot_id, instance_name and volume
+    def backup_volumes_unless_recent_backup(days = 5)
+      volumes_backed_up_recently = volumes_with_snapshot_within_last_days(days)
+      snapshots_created = []
+
+      volumes = @ec2.describe_volumes(filters: [{ name: 'attachment.status', values: ['attached'] }])
+      volumes.volumes.each do |volume|
+        next if volumes_backed_up_recently[volume.volume_id.to_s]
+        instance_name = get_instance_name(volume.attachments[0].instance_id)
+
+        tags = instance_name ? [{ key: 'Instance Name', value: instance_name }] : []
+        snapshot_info = create_ebs_snapshot(volume.volume_id,
+                                            'auto-ebs-snap-' + Time.now.strftime('%Y-%m-%d-%H:%M:%S'),
+                                            tags)
+
+        snapshots_created.push(snapshot_id: snapshot_info.snapshot_id,
+                               instance_name: instance_name,
+                               volume: volume.volume_id)
+      end
+
+      snapshots_created
+    end
+
+    # Find volumes that have a recent snapshot
+    # @param days [Integer] defaults to 5
+    # @return [Array] list of volume ids that have recent snapshots
+    def volumes_with_snapshot_within_last_days(days = 5)
+      volumes_backed_up_recently = {}
+
+      snapshots = @ec2.describe_snapshots(owner_ids: ['self'], filters: [{ name: 'status', values: ['completed'] }])
+      snapshots.snapshots.each do |snapshot|
+        if snapshot.start_time > Time.now - (SECONDS_IN_A_DAY * days)
+          volumes_backed_up_recently[snapshot.volume_id.to_s] = true
+        end
+      end
+      volumes_backed_up_recently
     end
   end
 end
