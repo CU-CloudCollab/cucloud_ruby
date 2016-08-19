@@ -4,6 +4,7 @@ require 'aws-sdk'
 module Cucloud
   require 'cucloud/version'
   require 'cucloud/ec2_utils'
+  require 'cucloud/ecs_utils'
   require 'cucloud/asg_utils'
   require 'cucloud/ssm_utils'
   require 'cucloud/iam_utils'
