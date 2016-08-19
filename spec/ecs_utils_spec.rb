@@ -28,6 +28,7 @@ describe Cucloud::EcsUtils do
               image: 'dtr.cucloud.net/test/test-image:953cb0f5e478',
               cpu: 10,
               memory: 30,
+              memory_reservation: 30,
               links: %w(
                 link1
                 link2
@@ -101,6 +102,18 @@ describe Cucloud::EcsUtils do
                 'test1' => 'test',
                 'test2' => 'test2'
               },
+              ulimits: [
+                {
+                  name: 'cpu',
+                  soft_limit: 30,
+                  hard_limit: 30
+                },
+                {
+                  name: 'memory',
+                  soft_limit: 50,
+                  hard_limit: 50
+                }
+              ],
               log_configuration: {
                 log_driver: 'syslog',
                 options: {
@@ -112,6 +125,7 @@ describe Cucloud::EcsUtils do
           task_definition_arn: 'old-task-def-arn',
           family: 'task_def_family',
           task_role_arn: 'test-role-arn',
+          network_mode: 'bridge',
           revision: 20,
           volumes: [
             {
@@ -144,6 +158,7 @@ describe Cucloud::EcsUtils do
               image: 'dtr.cucloud.net/test/test-image:953cb0f5e498',
               cpu: 10,
               memory: 30,
+              memory_reservation: 30,
               links: %w(
                 link1
                 link2
@@ -217,6 +232,18 @@ describe Cucloud::EcsUtils do
                 'test1' => 'test',
                 'test2' => 'test2'
               },
+              ulimits: [
+                {
+                  name: 'cpu',
+                  soft_limit: 30,
+                  hard_limit: 30
+                },
+                {
+                  name: 'memory',
+                  soft_limit: 50,
+                  hard_limit: 50
+                }
+              ],
               log_configuration: {
                 log_driver: 'syslog',
                 options: {
@@ -228,6 +255,7 @@ describe Cucloud::EcsUtils do
           task_definition_arn: 'new-task-def-arn',
           family: 'task_def_family',
           task_role_arn: 'test-role-arn',
+          network_mode: 'bridge',
           revision: 20,
           volumes: [
             {
@@ -353,6 +381,68 @@ describe Cucloud::EcsUtils do
                                                                                              target_container,
                                                                                              image_id))
         ).to eq 'new-task-def-arn'
+      end
+    end
+  end
+
+  context 'while describe_services is mocked with response' do
+    before do
+      ecs_client.stub_responses(
+        :describe_services,
+        services: [
+          {
+            service_arn: 'test-service-arn',
+            service_name: 'test-service-name',
+            cluster_arn: 'cluster-arn',
+            load_balancers: [
+              target_group_arn: 'target-group-arn',
+              load_balancer_name: 'elb-name',
+              container_name: 'container-name',
+              container_port: 80
+            ],
+            status: 'ACTIVE',
+            desired_count: 1,
+            running_count: 2,
+            pending_count: 0,
+            task_definition: 'task-def-arn',
+            deployment_configuration: {
+              maximum_percent: 150,
+              minimum_healthy_percent: 50
+            },
+            deployments: [
+              id: 'deployment-id',
+              status: 'deployment-status',
+              task_definition: 'deployment-task-arn',
+              desired_count: 1,
+              pending_count: 1,
+              running_count: 0,
+              created_at: Time.new(2016, 7, 9, 13, 30, 0),
+              updated_at: Time.new(2016, 7, 9, 13, 30, 0)
+            ],
+            role_arn: 'service-role-arn',
+            events: [
+              id: 'event-id',
+              created_at: Time.new(2016, 7, 9, 13, 30, 0),
+              message: 'test-event-message'
+            ],
+            created_at: Time.new(2016, 7, 9, 13, 30, 0)
+          }
+        ],
+        failures: [
+          arn: 'failure-arn',
+          reason: 'failure-reason'
+        ]
+      )
+    end
+
+    describe '#get_service' do
+      it 'should return without an error' do
+        expect { ecs_util.get_service('cluster_name', 'service_name') }.not_to raise_error
+      end
+
+      it 'should return expected value' do
+        expect(ecs_util.get_service('cluster_name', 'service_name')[:service_arn]).to eq 'test-service-arn'
+        expect(ecs_util.get_service('cluster_name', 'service_name')[:service_name]).to eq 'test-service-name'
       end
     end
   end

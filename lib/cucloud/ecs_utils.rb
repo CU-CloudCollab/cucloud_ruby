@@ -54,5 +54,12 @@ module Cucloud
     def register_task_definition(task_definition)
       @ecs.register_task_definition(task_definition)['task_definition']['task_definition_arn']
     end
+
+    # Get definition for service based on service name
+    # @param [String] Name of cluster on which this service is configured
+    # @param [String] Name of service
+    def get_service(cluster_name, service_name)
+      @ecs.describe_services(cluster: cluster_name, services: [service_name])[:services].first
+    end
   end
 end
