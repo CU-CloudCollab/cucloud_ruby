@@ -109,6 +109,7 @@ describe Cucloud::EcsUtils do
               }
             }
           ],
+          task_definition_arn: 'old-task-def-arn',
           family: 'task_def_family',
           task_role_arn: 'test-role-arn',
           revision: 20,
@@ -224,6 +225,7 @@ describe Cucloud::EcsUtils do
               }
             }
           ],
+          task_definition_arn: 'new-task-def-arn',
           family: 'task_def_family',
           task_role_arn: 'test-role-arn',
           revision: 20,
@@ -343,6 +345,14 @@ describe Cucloud::EcsUtils do
                                                                                              target_container,
                                                                                              image_id))
         end.not_to raise_error
+      end
+
+      it 'should return ARN of new task' do
+        expect(
+          ecs_util.register_task_definition(ecs_util.generate_td_options_hash_with_new_image(task,
+                                                                                             target_container,
+                                                                                             image_id))
+        ).to eq 'new-task-def-arn'
       end
     end
   end
