@@ -64,12 +64,24 @@ module Cucloud
     end
 
     # Get definition for service based on service name
-    # @param [String] Name of cluster on which this service is configured
-    # @param [String] Name of service
+    # @param cluster_name [String] Name of cluster on which this service is configured
+    # @param service_name [String] Name of service
     # @return [Aws::ECS::Types::Service] Service definition
     def get_service(cluster_name, service_name)
       # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#describe_services-instance_method
       @ecs.describe_services(cluster: cluster_name, services: [service_name])[:services].first
+    end
+
+    # Update the task definition associated with a service - this effectively deploys new task on service
+    # @param cluster_name [String] Name of cluster on which this service is configured
+    # @param service_name [String] Name of service
+    # @param task_arn [String] Task ARN to be used by service
+    # @return [Aws::ECS::Types::Service] Updated service
+    def update_service_task_definition!(cluster_name, service_name, task_arn)
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#update_service-instance_method
+      @ecs.update_service(cluster: cluster_name,
+                          service: service_name,
+                          task_definition: task_arn)['service']
     end
   end
 end
