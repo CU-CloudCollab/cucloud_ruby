@@ -379,8 +379,24 @@ describe Cucloud::EcsUtils do
         expect(
           ecs_util.register_task_definition(ecs_util.generate_td_options_hash_with_new_image(task,
                                                                                              target_container,
-                                                                                             image_id))
+                                                                                             image_id))[:arn]
         ).to eq 'new-task-def-arn'
+      end
+
+      it 'should return family of new task' do
+        expect(
+          ecs_util.register_task_definition(ecs_util.generate_td_options_hash_with_new_image(task,
+                                                                                             target_container,
+                                                                                             image_id))[:family]
+        ).to eq 'task_def_family'
+      end
+
+      it 'should return revision of new task' do
+        expect(
+          ecs_util.register_task_definition(ecs_util.generate_td_options_hash_with_new_image(task,
+                                                                                             target_container,
+                                                                                             image_id))[:revision]
+        ).to eq 20
       end
     end
   end

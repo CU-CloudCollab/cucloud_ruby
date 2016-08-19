@@ -23,6 +23,7 @@ module Cucloud
                "#{family_prefix}:#{revision}"
              end
 
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#describe_task_definition-instance_method
       @ecs.describe_task_definition(task_definition: task)['task_definition']
     end
 
@@ -50,15 +51,24 @@ module Cucloud
 
     # Create new task definition in AWS
     # @param options [Hash] Options hash to be passed along in request
-    # @return [String] ARN of new task definition
+    # @return [Hash] Hash w/ task definition arn, family and revision
     def register_task_definition(task_definition)
-      @ecs.register_task_definition(task_definition)['task_definition']['task_definition_arn']
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#register_task_definition-instance_method
+      new_def = @ecs.register_task_definition(task_definition)['task_definition']
+
+      {
+        arn: new_def['task_definition_arn'],
+        family: new_def['family'],
+        revision: new_def['revision']
+      }
     end
 
     # Get definition for service based on service name
     # @param [String] Name of cluster on which this service is configured
     # @param [String] Name of service
+    # @return [Aws::ECS::Types::Service] Service definition
     def get_service(cluster_name, service_name)
+      # https://docs.aws.amazon.com/sdkforruby/api/Aws/ECS/Client.html#describe_services-instance_method
       @ecs.describe_services(cluster: cluster_name, services: [service_name])[:services].first
     end
   end
