@@ -308,6 +308,47 @@ describe Cucloud::EcsUtils do
       end
     end
 
+    describe '#generate_td_options_hash' do
+      let(:task) { ecs_util.get_task_definition('test') }
+
+      it 'should throw InvalidTaskDefinitionError when passed an invalid task def' do
+        expect do
+          ecs_util.generate_td_options_hash('invalid task def')
+        end.to raise_error(Cucloud::EcsUtils::InvalidTaskDefinitionError)
+      end
+
+      it 'should not include a launch config arn' do
+        expect(
+          ecs_util.generate_td_options_hash(task)[:task_definition_arn].nil?
+        ).to eq true
+      end
+
+      it 'should not include a revision' do
+        expect(
+          ecs_util.generate_td_options_hash(task)[:revision].nil?
+        ).to eq true
+      end
+
+      it 'should not include a status' do
+        expect(
+          ecs_util.generate_td_options_hash(task)[:status].nil?
+        ).to eq true
+      end
+
+      it 'should not include requires_attributes' do
+        expect(
+          ecs_util.generate_td_options_hash(task)[:requires_attributes].nil?
+        ).to eq true
+      end
+
+      it 'should not include any empty string values' do
+        expect(
+          ecs_util.generate_td_options_hash(task)
+            .select { |_k, v| v == '' }.empty?
+        ).to eq true
+      end
+    end
+
     describe '#generate_td_options_hash_with_new_image' do
       let(:task) { ecs_util.get_task_definition('test') }
       let(:target_container) { 'test_container' }
