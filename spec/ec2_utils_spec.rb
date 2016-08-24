@@ -132,6 +132,16 @@ describe Cucloud::Ec2Utils do
       expect(snapshots_created[:snapshot_id]).to eq 'snap-def'
     end
 
+    it 'should find snapshots odler than 6 days' do
+      snapshots_found = ec_util.find_ebs_snapshots(days_old: 6)
+      expect(snapshots_found[0]).to eq 'snap-def'
+    end
+
+    it 'should find all the snapshots' do
+      snapshots_found = ec_util.find_ebs_snapshots
+      expect(snapshots_found.length).to eq 2
+    end
+
     it 'should get nil for the instance name tag for i-2' do
       ec2_client.stub_responses(
         :describe_instances,

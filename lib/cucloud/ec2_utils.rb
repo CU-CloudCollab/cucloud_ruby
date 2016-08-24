@@ -214,5 +214,27 @@ module Cucloud
       end
       volumes_backed_up_recently
     end
+
+    # Find snapshots with supplied properties, currently only supports days_old
+    # @param options [Hash]
+    # @return [Array] list of snapshot ids
+    def find_ebs_snapshots(options = {})
+      days_old = options[:days_old]
+      found_snapshots = []
+      snapshots = @ec2.describe_snapshots(owner_ids: ['self'], filters: [{ name: 'status', values: ['completed'] }])
+
+      snapshots.snapshots.each do |snapshot|
+        if !days_old.nil?
+          snapshot_days_old = (Time.now.to_i - snapshot.start_time.to_i) / SECONDS_IN_A_DAY
+
+          if snapshot_days_old > days_old
+            found_snapshots.push(snapshot.snapshot_id)
+          end
+        else
+          found_snapshots.push(snapshot.snapshot_id)
+        end
+      end
+      found_snapshots
+    end
   end
 end
