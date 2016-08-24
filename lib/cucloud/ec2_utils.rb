@@ -218,7 +218,7 @@ module Cucloud
     # Find snapshots with supplied properties, currently only supports days_old
     # @param options [Hash]
     # @return [Array] list of snapshot ids
-    def find_ebs_snapshots(options)
+    def find_ebs_snapshots(options = {})
       days_old = options[:days_old]
       found_snapshots = []
       snapshots = @ec2.describe_snapshots(owner_ids: ['self'], filters: [{ name: 'status', values: ['completed'] }])
