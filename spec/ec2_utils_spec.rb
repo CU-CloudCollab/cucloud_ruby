@@ -137,7 +137,7 @@ describe Cucloud::Ec2Utils do
       expect(snapshots_found[0]).to eq 'snap-def'
     end
 
-    it "should find all the snapshots" do
+    it 'should find all the snapshots' do
       snapshots_found = ec_util.find_ebs_snapshots
       expect(snapshots_found.length).to eq 2
     end
