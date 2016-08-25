@@ -53,12 +53,8 @@ module Cucloud
     #   returns nil if the snapshot did not complete within the allowed time.
     def wait_until_snapshot_available(snapshot, max_attempts = nil, delay = 10)
       snapshot.wait_until(max_attempts: max_attempts, delay: delay) do |snap|
-        # puts "Snapshot progress: #{snap.percent_progress}% - #{snap.status}"
-
-        # less conservative test
-        # snap.percent_progress == 100
-
-        # more conservative test
+        # Status == available is a conservative test for completion.
+        # A more liberal test would be percent_progress == 100.
         snap.status == 'available'
       end
     rescue Aws::Waiters::Errors::WaiterFailed
