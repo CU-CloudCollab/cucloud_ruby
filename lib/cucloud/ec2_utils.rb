@@ -17,9 +17,9 @@ module Cucloud
       @ssm_utils = ssm_utils
     end
 
-    # Get instnace object
+    # Get instance object
     # @param instance_id [String] instance id in the format of i-121231231231
-    # @return [Aws::EC2::Instance] Object represneting the intance see
+    # @return [Aws::EC2::Instance] Object representing the intance see
     # http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Instance.html
     def get_instance(instance_id)
       Aws::EC2::Instance.new(id: instance_id, client: @ec2)
@@ -53,10 +53,21 @@ module Cucloud
 
     # reboot instance
     def reboot_instance(instance)
+      i = get_instance(instance)
+      i.reboot
     end
 
     # Terminate ec2 instance for a specific instance number.
-    def delete_instance(instance)
+    def terminate_instance(instance)
+      i = get_instance(instance)
+      if i.exists?
+        case i.state.code
+        when 48 # terminated
+          raise "#{id} is already terminated"
+        else
+          i.terminate
+        end
+      end
     end
 
     # Assoications an Elastic IP adress with a specific instance number.
