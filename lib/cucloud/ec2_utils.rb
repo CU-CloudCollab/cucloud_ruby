@@ -61,12 +61,7 @@ module Cucloud
     def terminate_instance(instance)
       i = get_instance(instance)
       if i.exists?
-        case i.state.code
-        when 48 # terminated
-          raise "#{id} is already terminated"
-        else
           i.terminate
-        end
       end
     end
 
