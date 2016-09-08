@@ -106,6 +106,10 @@ describe Cucloud::Ec2Utils do
       expect { ec_util.stop_instance('i-1') }.not_to raise_error
     end
 
+    it "should 'terminate_instance' without an error" do
+      expect { ec_util.terminate_instance('i-1') }.not_to raise_error
+    end
+
     it "should 'reboot_instance' without an error" do
       expect { ec_util.reboot_instance('i-1') }.not_to raise_error
     end
@@ -132,7 +136,7 @@ describe Cucloud::Ec2Utils do
       expect(snapshots_created[:snapshot_id]).to eq 'snap-def'
     end
 
-    it 'should find snapshots odler than 6 days' do
+    it 'should find snapshots older than 6 days' do
       snapshots_found = ec_util.find_ebs_snapshots(days_old: 6)
       expect(snapshots_found[0]).to eq 'snap-def'
     end
