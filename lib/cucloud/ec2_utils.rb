@@ -60,9 +60,7 @@ module Cucloud
     # Terminate ec2 instance for a specific instance number.
     def terminate_instance(instance)
       i = get_instance(instance)
-      if i.exists?
-          i.terminate
-      end
+      i.terminate
     end
 
     # Assoications an Elastic IP adress with a specific instance number.
