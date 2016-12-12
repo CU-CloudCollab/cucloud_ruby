@@ -93,6 +93,12 @@ describe Cucloud::VpcUtils do
         ['acl-4a3ba42f']
       ).find { |x| x[:acl] == 'acl-4a3ba42f' }).to be_nil
     end
+
+    it 'should not mutate rules array' do
+      rules = [{ cidr: '0.0.0.0/0', egress: true, protocol: '6', from: 80, to: 80 }]
+      vpc_utils.compare_nacls(rules)
+      expect(rules.length).to be 1
+    end
   end
 
   describe '#flow_logs?' do
