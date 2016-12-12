@@ -58,7 +58,7 @@ module Cucloud
 
     # Compare ACL entries aganinst a rule set
     def check_acls(acl, rules)
-      missing_entries = rules
+      missing_entries = rules.dup
       additional_entries = []
 
       acl.entries.each do |entry|
