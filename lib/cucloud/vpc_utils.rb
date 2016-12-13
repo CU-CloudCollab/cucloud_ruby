@@ -54,7 +54,7 @@ module Cucloud
       vpc_flow_log_status.find { |x| !x[:flow_logs_active] }.nil?
     end
 
-    # Does the current region have vpc flow logs?
+    # Get flow log status for all VPCs in this region
     # @return [Array<Hash>]
     def vpc_flow_log_status
       @vpc.describe_vpcs.vpcs.map do |vpc|
