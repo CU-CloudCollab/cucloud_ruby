@@ -57,7 +57,6 @@ module Cucloud
     # Does the current region have vpc flow logs?
     # @return [Array<Hash>]
     def vpc_flow_log_status
-      puts @vpc.describe_flow_logs.flow_logs
       @vpc.describe_vpcs.vpcs.map do |vpc|
         {
           vpc_id: vpc.vpc_id,
