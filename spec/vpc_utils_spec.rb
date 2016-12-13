@@ -101,9 +101,107 @@ describe Cucloud::VpcUtils do
     end
   end
 
-  describe '#flow_logs?' do
-    it 'should return true' do
-      expect(vpc_utils.flow_logs?).to be true
+  context 'while vpc responses stubbed out with flow logs enabled' do
+    before do
+      vpc_client.stub_responses(
+        :describe_vpcs,
+        vpcs: [
+          {
+            vpc_id: 'test-vpc',
+            state: 'available',
+            cidr_block: '10.0.0.0/24',
+            dhcp_options_id: 'dopt-1a2b3c4d2',
+            tags: [
+              {
+                key: 'tagname',
+                value: 'tagvalue'
+              }
+            ],
+            instance_tenancy: 'default',
+            is_default: true
+          }
+        ]
+      )
+
+      vpc_client.stub_responses(
+        :describe_flow_logs,
+        flow_logs: [
+          {
+            creation_time: Time.now,
+            flow_log_id: 'test-id',
+            flow_log_status: 'active',
+            resource_id: 'test-vpc',
+            traffic_type: 'ACCEPT',
+            log_group_name: 'log-group',
+            deliver_logs_status: 'active',
+            deliver_logs_error_message: 'test',
+            deliver_logs_permission_arn: 'permission-arn'
+          }
+        ]
+      )
+    end
+
+    describe '#flow_logs?' do
+      it 'should return true' do
+        expect(vpc_utils.flow_logs?).to be true
+      end
+    end
+
+    describe '#vpc_flow_log_status?' do
+      it 'should return expected vpc_id' do
+        expect(vpc_utils.vpc_flow_log_status[0][:vpc_id]).to eq 'test-vpc'
+      end
+
+      it 'should return expected flow log status (true)' do
+        expect(vpc_utils.vpc_flow_log_status[0][:flow_logs_active]).to eq true
+      end
+    end
+  end
+
+  context 'while vpc responses stubbed out without flow logs' do
+    before do
+      vpc_client.stub_responses(
+        :describe_vpcs,
+        vpcs: [
+          {
+            vpc_id: 'test-vpc',
+            state: 'available',
+            cidr_block: '10.0.0.0/24',
+            dhcp_options_id: 'dopt-1a2b3c4d2',
+            tags: [
+              {
+                key: 'tagname',
+                value: 'tagvalue'
+              }
+            ],
+            instance_tenancy: 'default',
+            is_default: true
+          }
+        ]
+      )
+
+      vpc_client.stub_responses(
+        :describe_flow_logs,
+        flow_logs: [
+
+        ]
+      )
+    end
+
+    describe '#flow_logs?' do
+      it 'should return true' do
+        expect(vpc_utils.flow_logs?).to be false
+      end
+    end
+
+    describe '#vpc_flow_log_status?' do
+      it 'should return expected vpc_id' do
+        expect(vpc_utils.vpc_flow_log_status[0][:vpc_id]).to eq 'test-vpc'
+      end
+
+      it 'should return expected flow log status (true)' do
+        expect(vpc_utils.vpc_flow_log_status[0][:flow_logs_active]).to eq false
+      end
     end
   end
 end

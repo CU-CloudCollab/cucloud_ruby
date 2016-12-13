@@ -51,7 +51,21 @@ module Cucloud
     # Does the current region have vpc flow logs?
     # @return [boolean]
     def flow_logs?
-      !@vpc.describe_flow_logs({}).empty?
+      vpc_flow_log_status.find { |x| !x[:flow_logs_active] }.nil?
+    end
+
+    # Does the current region have vpc flow logs?
+    # @return [Array<Hash>]
+    def vpc_flow_log_status
+      puts @vpc.describe_flow_logs.flow_logs
+      @vpc.describe_vpcs.vpcs.map do |vpc|
+        {
+          vpc_id: vpc.vpc_id,
+          flow_logs_active: !@vpc.describe_flow_logs(
+            filter: [{ name: 'resource-id', values: [vpc.vpc_id] }]
+          ).flow_logs.empty?
+        }
+      end
     end
 
     private
