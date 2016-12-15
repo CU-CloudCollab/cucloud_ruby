@@ -60,6 +60,9 @@ To run styleguide/syntax tests:
 To run unit tests:
 ``` $ bundle exec rake spec ```
 
+To run unit tests for one file (kms_utils.spec.rb):
+``` $ bundle exec rake spec SPEC=spec/kms_utils_spec.rb ```
+
 To generate documentation:
 ``` bundle exec yard ```
 

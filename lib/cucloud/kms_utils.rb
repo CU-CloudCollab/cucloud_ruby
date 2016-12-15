@@ -1,12 +1,10 @@
 module Cucloud
   # Utilities library for interacting with KMS
   class KmsUtils
-
     attr_accessor :kms_key_id
 
-    def initialize(kms_client = Aws::KMS::Client.new, key_id = nil)
+    def initialize(kms_client = Aws::KMS::Client.new)
       @kms = kms_client
-      @kms_key_id = key_id
     end
 
     # Decrypt the given Base64-strict-encoded ciphertext.

@@ -8,6 +8,7 @@ module Cucloud
   require 'cucloud/asg_utils'
   require 'cucloud/ssm_utils'
   require 'cucloud/iam_utils'
+  require 'cucloud/kms_utils'
   require 'cucloud/vpc_utils'
   require 'cucloud/config_service_utils'
   require 'cucloud/cloud_trail_utils'
