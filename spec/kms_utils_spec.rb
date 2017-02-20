@@ -62,6 +62,22 @@ describe Cucloud::KmsUtils do
     expect(Cucloud::KmsUtils.new(kms_client)).to be_a_kind_of(Cucloud::KmsUtils)
   end
 
+  before do
+    kms_client.stub_responses(
+      :decrypt,
+      plaintext: plaintext,
+      key_id: key_id
+    )
+  end
+
+  before do
+    kms_client.stub_responses(
+      :encrypt,
+      ciphertext_blob: plaintext,
+      key_id: key_id
+    )
+  end
+
   describe '#decrypt' do
     it 'should return nil when ciphertext is nil' do
       expect(kms_util.decrypt(nil)).to be_nil
@@ -73,14 +89,6 @@ describe Cucloud::KmsUtils do
 
     it 'should raise an error when ciphertext is not valid Base64 string encoded' do
       expect { kms_util.decrypt(plaintext) }.to raise_error(ArgumentError)
-    end
-
-    before do
-      kms_client.stub_responses(
-        :decrypt,
-        plaintext: plaintext,
-        key_id: key_id
-      )
     end
 
     it 'should return plaintext when an encrypted value is passed' do
@@ -112,14 +120,6 @@ describe Cucloud::KmsUtils do
         expect { kms_util.encrypt('', key_id) }.not_to raise_error
       end
 
-      before do
-        kms_client.stub_responses(
-          :encrypt,
-          ciphertext_blob: plaintext,
-          key_id: key_id
-        )
-      end
-
       it 'should return ciphertext when a kms_key_id is passed' do
         expect(kms_util.encrypt(plaintext, key_id)).to eq(ciphertext)
       end
@@ -144,14 +144,6 @@ describe Cucloud::KmsUtils do
         expect { kms_util.encrypt('') }.not_to raise_error
       end
 
-      before do
-        kms_client.stub_responses(
-          :encrypt,
-          ciphertext_blob: plaintext,
-          key_id: key_id
-        )
-      end
-
       it 'should return ciphertext when no kms_key_id is passed' do
         expect(kms_util.encrypt(plaintext, key_id)).to eq(ciphertext)
       end
@@ -159,6 +151,33 @@ describe Cucloud::KmsUtils do
       it 'should return ciphertext when a kms_key_id is passed' do
         expect(kms_util.encrypt(plaintext, key_id)).to eq(ciphertext)
       end
+    end
+
+    let(:encrypt_cases3) do
+      [
+        { input: { 'key1_decrypted' => plaintext }, output: { 'key1_encrypted' => ciphertext } },
+        { input: { key1_decrypted: plaintext }, output: { key1_encrypted: ciphertext } },
+        { input: { key1_encrypted: ciphertext }, output: { key1_encrypted: ciphertext } }
+      ]
+    end
+
+    let(:encrypt_cases4) do
+      [
+        { input: { level1: { key1_decrypted: plaintext } }, output: { level1: { key1_encrypted: ciphertext } } },
+        { input: { level1: { level2: { key1_decrypted: plaintext } } },
+          output: { level1: { level2: { key1_encrypted: ciphertext } } } },
+        { input: { level1: 'nothing', key1_decrypted: plaintext },
+          output: { level1: 'nothing', key1_encrypted: ciphertext } },
+        { input: ['nothing', { level1: { key1_decrypted: plaintext } }],
+          output: { level1: { key1_encrypted: ciphertext } } }
+      ]
+    end
+
+    let(:encrypt_cases5) do
+      [
+        { input: { key1_decrypted: plaintext }, output: :key_decrypted },
+        { input: { key1_encrypted: ciphertext }, output: :key_decrypted }
+      ]
     end
 
     describe '#encrypt_struct' do
@@ -174,56 +193,44 @@ describe Cucloud::KmsUtils do
         end
       end
 
-      before do
-        kms_client.stub_responses(
-          :encrypt,
-          ciphertext_blob: plaintext,
-          key_id: key_id
-        )
-      end
-
-      let(:testcases3) do
-        [
-          { input: { 'key1_decrypted' => plaintext }, output: { 'key1_encrypted' => ciphertext } },
-          { input: { key1_decrypted: plaintext }, output: { key1_encrypted: ciphertext } },
-          { input: { key1_encrypted: ciphertext }, output: { key1_encrypted: ciphertext } }
-        ]
-      end
-
       it 'should encrypt values for keys with suffix _decrypted' do
-        testcases3.each do |testcase|
+        encrypt_cases3.each do |testcase|
           expect(kms_util.encrypt_struct(testcase[:input])).to include(testcase[:output])
         end
       end
 
-      let(:testcases4) do
-        [
-          { input: { level1: { key1_decrypted: plaintext } }, output: { level1: { key1_encrypted: ciphertext } } },
-          { input: { level1: { level2: { key1_decrypted: plaintext } } },
-            output: { level1: { level2: { key1_encrypted: ciphertext } } } },
-          { input: { level1: 'nothing', key1_decrypted: plaintext },
-            output: { level1: 'nothing', key1_encrypted: ciphertext } },
-          { input: ['nothing', { level1: { key1_decrypted: plaintext } }],
-            output: { level1: { key1_encrypted: ciphertext } } }
-        ]
-      end
       it 'should encrypt values for keys with suffix _decrypted and maintain original object structure' do
-        testcases4.each do |testcase|
+        encrypt_cases4.each do |testcase|
           expect(kms_util.encrypt_struct(testcase[:input])).to include(testcase[:output])
         end
       end
 
-      let(:testcases5) do
-        [
-          { input: { key1_decrypted: plaintext }, output: :key_decrypted },
-          { input: { key1_encrypted: ciphertext }, output: :key_decrypted }
-        ]
-      end
       it 'should encrypt values for keys with suffix _decrypted and remove original key' do
-        testcases5.each do |testcase|
+        encrypt_cases5.each do |testcase|
           expect(kms_util.encrypt_struct(testcase[:input])).not_to include(testcase[:output])
         end
       end
+    end
+
+    let(:decrypt_cases3) do
+      [
+        { input: { 'key1_encrypted' => ciphertext }, output: { 'key1_decrypted' => plaintext } },
+        { input: { key1_encrypted: ciphertext }, output: { key1_decrypted: plaintext } },
+        { input: { key1_decrypted: plaintext }, output: { key1_decrypted: plaintext } }
+      ]
+    end
+
+    let(:decrypt_cases4) do
+      [
+        { input: { level1: { key1_encrypted: ciphertext } },
+          output: { level1: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } },
+        { input: { level1: { level2: { key1_encrypted: ciphertext } } },
+          output: { level1: { level2: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } } },
+        { input: { level1: 'nothing', key1_encrypted: ciphertext },
+          output: { level1: 'nothing', key1_decrypted: plaintext, key1_encrypted: ciphertext } },
+        { input: ['nothing', { level1: { key1_encrypted: ciphertext } }],
+          output: { level1: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } }
+      ]
     end
 
     describe '#decrypt_struct' do
@@ -239,41 +246,14 @@ describe Cucloud::KmsUtils do
         end
       end
 
-      before do
-        kms_client.stub_responses(
-          :decrypt,
-          plaintext: plaintext,
-          key_id: key_id
-        )
-      end
-
-      let(:testcases3) do
-        [
-          { input: { 'key1_encrypted' => ciphertext }, output: { 'key1_decrypted' => plaintext } },
-          { input: { key1_encrypted: ciphertext }, output: { key1_decrypted: plaintext } },
-          { input: { key1_decrypted: plaintext }, output: { key1_decrypted: plaintext } }
-        ]
-      end
       it 'should decrypt values for keys with suffix _encrypted' do
-        testcases3.each do |testcase|
+        decrypt_cases3.each do |testcase|
           expect(kms_util.decrypt_struct(testcase[:input])).to include(testcase[:output])
         end
       end
 
-      let(:testcases4) do
-        [
-          { input: { level1: { key1_encrypted: ciphertext } },
-            output: { level1: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } },
-          { input: { level1: { level2: { key1_encrypted: ciphertext } } },
-            output: { level1: { level2: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } } },
-          { input: { level1: 'nothing', key1_encrypted: ciphertext },
-            output: { level1: 'nothing', key1_decrypted: plaintext, key1_encrypted: ciphertext } },
-          { input: ['nothing', { level1: { key1_encrypted: ciphertext } }],
-            output: { level1: { key1_decrypted: plaintext, key1_encrypted: ciphertext } } }
-        ]
-      end
       it 'should decrypt values for keys with suffix _encrypted and add to original object structure' do
-        testcases4.each do |testcase|
+        decrypt_cases4.each do |testcase|
           expect(kms_util.decrypt_struct(testcase[:input])).to include(testcase[:output])
         end
       end

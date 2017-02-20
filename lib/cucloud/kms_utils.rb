@@ -119,68 +119,6 @@ module Cucloud
       end
     end
 
-    # Read a JSON file and encrypt JSON attributes within it.
-    # JSON attributes having name suffixed by "_decrypted" will be encrypted and added to the
-    # JSON structure. The original "_decrypted" atttribute-value pairs are removed from the
-    # returned JSON and replaced with "\_encrypted" versions.
-    # @param filename the name of the source JSON file
-    # @param key_id [String] KMS key id to use for encryption (optional)
-    # @return JSON content of the file with encrypted atttribute-value pairs
-    def encrypt_json_file(filename, key_id = @kms_key_id)
-      require 'json'
-      encrypt_json(JSON.parse(File.read(filename)), key_id)
-    end
-
-    # Encrypt attribute values within the JSON structure.
-    # JSON attributes having name suffixed by "_decrypted" will be encrypted and added to the
-    # JSON structure. The original "_decrypted" atttribute-value pairs are removed from the
-    # returned JSON and replaced with "\_encrypted" versions.
-    #
-    # This function is particularly useful for encrypting custom JSON passed
-    # to OpsWorks stacks or recipes.
-    #
-    # If the JSON structure contains a top-level attribute named "kem_key_arn",
-    # that KMS key is used for encryption.
-    # @param json [JSON] JSON structure to be encrypted
-    # @param key_id [String] KMS key id to use for encryption (optional)
-    # @return JSON structure with decrypted atttribute-value pairs replaced by encrypted atttribute-value pairs
-    def encrypt_json(json, key_id = @kms_key_id)
-      # expect kms_key_arn at top level of file and
-      # use it if no key_id is passed in
-      if key_id.nil?
-        raise(
-          MissingKmsKey,
-          'No KMS key ID provided. Expecting \'kms_key_arn\' as top-level key in JSON'
-        ) unless json.key?('kms_key_arn')
-        key_id = json['kms_key_arn']
-      end
-      encrypt_struct(json, key_id)
-    end
-
-    # Read a JSON file and decrypt JSON attributes within it.
-    # JSON attributes having name suffixed by "\_encrypted" will be decrypted and added to the
-    # JSON structure. The original "\_encrypted" atttribute-value pairs are left intact in the
-    # returned JSON.
-    # @param filename the name of the source JSON file
-    # @return JSON content of the file with decrypted atttribute-value pairs added
-    def decrypt_json_file(filename)
-      require 'json'
-      decrypt_json(JSON.parse(File.read(filename)))
-    end
-
-    # Decrypt attributes within the provided JSON.
-    # JSON attributes having name suffixed by "\_encrypted" will be decrypted and added to the
-    # JSON structure. The original "\_encrypted" atttribute-value pairs are left intact in the
-    # returned JSON.
-    #
-    # This function is particularly useful for encrypting custom JSON passed
-    # to OpsWorks stacks or recipes.
-    # @param json [JSON] the JSON structure to decrypt
-    # @return JSON with decrypted atttribute-value pairs added
-    def decrypt_json(json)
-      decrypt_struct(json)
-    end
-
     private
 
     def key_to_decrypt?(key)
