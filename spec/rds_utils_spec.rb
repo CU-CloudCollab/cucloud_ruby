@@ -17,9 +17,9 @@ describe Cucloud::RdsUtils do
   let(:mock_snapshot) do
     {
       db_instance_identifier: 'testDb',
-      status: 'String',
+      status: 'available',
       db_snapshot_identifier: 'snap1',
-      snapshot_create_time: nil,
+      snapshot_create_time: Time.new(2004),
       engine: 'String',
       allocated_storage: 5,
       port: 3306,
@@ -51,13 +51,84 @@ describe Cucloud::RdsUtils do
     expect(Cucloud::RdsUtils.new(rds_client)).to be_a_kind_of(Cucloud::RdsUtils)
   end
 
+  context 'while describe_db_instances is returns an instand not found error' do
+    before do
+      rds_client.stub_responses(
+        :describe_db_instances,
+        Aws::RDS::Errors::DBInstanceNotFound.new('test', 'test')
+      )
+    end
+
+    describe '#does_db_exist?' do
+      it 'should not exist' do
+        expect(rds_utils.does_db_exist?('bogus')).to eq false
+      end
+    end
+
+    describe '#delete_db_instance?' do
+      it 'should  raise error with non existant db' do
+        expect{rds_utils.delete_db_instance('testDb')}.to raise_error Aws::RDS::Errors::DBInstanceNotFound
+      end
+    end
+
+  end
+
+  context 'while describe_db_instances is returns an instand not found error' do
+    before do
+      rds_client.stub_responses(
+        :delete_db_instance,
+        db_instance: {
+          db_instance_identifier: 'testDb'
+        }
+      )
+      rds_client.stub_responses(
+        :describe_db_instances,
+        db_instances: [
+          db_instance_status: 'deleted'
+        ]
+
+      )
+    end
+
+    describe '#delete_db_instance?' do
+      it 'should not raise error' do
+        expect{rds_utils.delete_db_instance('testDb')}.not_to raise_error
+      end
+    end
+
+    describe '#delete_db_instance?' do
+      it 'should not exist' do
+        expect{rds_utils.delete_db_instance('testDb', '111111')}.not_to raise_error
+      end
+    end
+  end
+
+  context 'while describe_db_snapshots is mocked with multipe availble snapshots' do
+    before do
+      rds_client.stub_responses(
+        :describe_db_snapshots,
+        db_snapshots: [
+          mock_snapshot,
+          mock_snapshot.merge(db_snapshot_identifier: 'snap2', snapshot_create_time: Time.new(2008))
+        ]
+      )
+    end
+
+    describe '#find_latest_snapshot' do
+      it 'should return a snapshot identifier' do
+        expect(rds_utils.find_latest_snapshot(db_instance.id)).to eq 'snap2'
+      end
+    end
+  end
+
   context 'while describe_db_instances is mocked with a response' do
     before do
       rds_client.stub_responses(
         :describe_db_instances,
         db_instances: [
           {
-            db_instance_identifier: 'testDb'
+            db_instance_identifier: 'testDb',
+            instance_create_time: Time.new('2016-09-26 17:53:05 UTC')
           }
         ]
       )
@@ -74,6 +145,12 @@ describe Cucloud::RdsUtils do
 
       it 'should return the DBInstance with correct name' do
         expect(rds_utils.get_instance('testDb').db_instance_identifier).to eq 'testDb'
+      end
+
+      describe '#does_db_exist?' do
+        it ' should exist' do
+          expect(rds_utils.does_db_exist?('testDb')).to eq true
+        end
       end
     end
 
@@ -104,6 +181,12 @@ describe Cucloud::RdsUtils do
         describe '#create_snapshot_and_wait_until_available' do
           it 'should return nil because a snapshot is pending' do
             expect(rds_utils.create_snapshot_and_wait_until_available(db_instance)).to be_nil
+          end
+        end
+
+        describe '#find_latest_snapshot' do
+          it 'should return a nil since there are no available snapshots' do
+            expect(rds_utils.find_latest_snapshot(db_instance.id)).to be_nil
           end
         end
       end

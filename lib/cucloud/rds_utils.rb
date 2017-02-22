@@ -13,6 +13,76 @@ module Cucloud
       resource.db_instance(db_instance_identifier)
     end
 
+    # Determine if a givne db instance exist
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @return [boolean]
+    def does_db_exist?(db_instance_identifier)
+      get_instance(db_instance_identifier).instance_create_time
+      true
+    rescue Aws::RDS::Errors::DBInstanceNotFound
+      false
+    end
+
+    def delete_db_instance(db_instance_identifier, db_snapshot_identifier = nil)
+      if does_db_exist?(db_instance_identifier)
+        if db_snapshot_identifier.nil?
+          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, skip_final_snapshot: true)
+        else
+          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, final_db_snapshot_identifier: db_snapshot_identifier)
+        end
+
+        @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
+      else
+        raise Aws::RDS::Errors::DBInstanceNotFound.new(db_instance_identifier, '')
+      end
+    end
+
+    # def restore_db(options)
+    #   db_id = options[:db_instance_identifier]
+    #   db_subnet_group_name = if options[:db_subnet_group_name].nil?
+    #                            'private'
+    #                          else
+    #                            options[:db_subnet_group_name]
+    #                          end
+    #   puts "SUBNET GROUP NAME #{db_subnet_group_name}"
+    #
+    #   restore_from = options[:restore_from] || 'clkprod'
+    #
+    #   if !does_db_exist?(db_id)
+    #     db_name = options[:db_name]
+    #     db_snapshot_identifier = options[:db_snapshot_identifier].nil? ? find_latest_snapshot(db_instance_identifier: restore_from) : options[:db_snapshot_identifier]
+    #     db_instance_class = options[:db_instance_class].nil? ? 'db.t2.large' : options[:db_instance_class]
+    #     db_option_group = options[:option_group_name].nil? ? 'kuali-oracle-options' : options[:option_group_name]
+    #
+    #     @RDS.client.restore_db_instance_from_db_snapshot(db_name: db_name,
+    #                                                      db_instance_identifier: db_id,
+    #                                                      db_snapshot_identifier: db_snapshot_identifier,
+    #                                                      db_instance_class: db_instance_class,
+    #                                                      db_subnet_group_name: db_subnet_group_name,
+    #                                                      availability_zone: 'us-east-1d',
+    #                                                      option_group_name: db_option_group)
+    #   else
+    #     puts "#{db_id} already exist"
+    #   end
+    # end
+
+    def find_latest_snapshot(db_instance_identifier)
+      latest_snapshot_time = Time.new(2002)
+      latest_snap_shot = nil
+      snapshots_info = @rds.describe_db_snapshots(db_instance_identifier: db_instance_identifier)[:db_snapshots]
+
+      snapshots_info.each do |snapshot_info|
+        next if snapshot_info[:status] != 'available'
+
+        if latest_snapshot_time.to_i < snapshot_info[:snapshot_create_time].to_i
+          latest_snapshot_time = snapshot_info[:snapshot_create_time].to_i
+          latest_snap_shot = snapshot_info
+        end
+      end
+
+       latest_snap_shot.nil? ? nil : latest_snap_shot[:db_snapshot_identifier]
+    end
+
     # Begins the creation of a snapshot of the given RDS instance.
     # This is a non-blocking call so it will return before the snapshot
     # is created and available.

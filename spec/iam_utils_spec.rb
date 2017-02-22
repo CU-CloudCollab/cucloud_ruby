@@ -42,6 +42,37 @@ describe Cucloud::IamUtils do
     end
   end
 
+  context 'while IAM get_server_certificate is stubbed with aliased account' do
+    before do
+      iam_client.stub_responses(
+        :get_server_certificate,
+        server_certificate: {
+          certificate_body: 'bleh',
+          server_certificate_metadata: {
+            arn: 'some:arn',
+            path: 'http://example.org',
+            server_certificate_name: 'some_name',
+            server_certificate_id: 'some_id'
+          }
+        }
+      )
+    end
+
+    describe '#get_cert_arn' do
+      it 'should return without an error' do
+        expect { iam_util.get_cert_arn('some_name') }.not_to raise_error
+      end
+
+      it 'should return expected value' do
+        expect(iam_util.get_cert_arn('some_name')).to eq 'some:arn'
+      end
+
+      it 'should raise an error if no cert name is given' do
+        expect{iam_util.get_cert_arn(nil)}.to raise_error
+      end
+    end
+  end
+
   context 'while IAM list_account_aliases is stubbed with an unaliased account' do
     before do
       iam_client.stub_responses(
