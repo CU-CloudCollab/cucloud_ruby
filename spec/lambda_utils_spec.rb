@@ -52,11 +52,30 @@ describe Cucloud::LambdaUtils do
       )
     end
 
-    describe '#download_source_for_function' do
+    describe '#get_all_versions_for_function' do
       it 'should return without an error' do
         versions = lambda_utils.get_all_versions_for_function('Lambda-Dev')
         expect(versions.length).to be 3
         expect(%w(1 2 3) - versions).to be_empty
+      end
+    end
+  end
+
+  context 'while Lambda list_functions is stubbed oout' do
+    before do
+      lambda_client.stub_responses(
+        :list_functions,
+        functions: [
+          { function_name: 'A' }, { function_name: 'B' }, { function_name: 'C' }
+        ]
+      )
+    end
+
+    describe '#get_all_function_names_for_account' do
+      it 'should return without an error' do
+        functions = lambda_utils.get_all_function_names_for_account
+        expect(functions.length).to be 3
+        expect(%w(A B C) - functions).to be_empty
       end
     end
   end

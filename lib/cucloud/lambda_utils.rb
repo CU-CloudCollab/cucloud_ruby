@@ -28,10 +28,18 @@ module Cucloud
     end
 
     # Return all versions of a lambda function
+    # @param function_name [String] Name of the lambda function
     # @return [Array] Array of strings representing the versions of the lambda function
     def get_all_versions_for_function(function_name)
       version_response = @lambda.list_versions_by_function(function_name: function_name)
       version_response.versions.map { |x| x[:version] }
+    end
+
+    # Return all funtion names for an account
+    # @return [Array] Array of strings representing the function names
+    def get_all_function_names_for_account
+      funtions_response = @lambda.list_functions
+      funtions_response.functions.map { |x| x[:function_name] }
     end
   end
 end

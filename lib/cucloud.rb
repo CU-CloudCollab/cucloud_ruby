@@ -14,6 +14,7 @@ module Cucloud
   require 'cucloud/cloud_trail_utils'
   require 'cucloud/rds_utils'
   require 'cucloud/lambda_utils'
+  require 'cucloud/cfn_utils'
 
   # This is the default region API calls are made against
   DEFAULT_REGION = 'us-east-1'.freeze
