@@ -10,7 +10,7 @@ describe Cucloud::SSMUtils do
   end
 
   describe '#send_patch_command' do
-    it 'should send a SSM coman' do
+    it 'should send a SSM command' do
       ssm_client.stub_responses(
         :send_command, command: { command_id: '1' }
       )

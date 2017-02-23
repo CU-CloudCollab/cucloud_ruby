@@ -65,12 +65,11 @@ describe Cucloud::RdsUtils do
       end
     end
 
-    describe '#delete_db_instance?' do
-      it 'should  raise error with non existant db' do
-        expect{rds_utils.delete_db_instance('testDb')}.to raise_error Aws::RDS::Errors::DBInstanceNotFound
+    describe '#delete_db_instance' do
+      it 'should raise error with non existant db' do
+        expect { rds_utils.delete_db_instance('testDb') }.to raise_error Aws::RDS::Errors::DBInstanceNotFound
       end
     end
-
   end
 
   context 'while describe_db_instances is returns an instand not found error' do
@@ -92,13 +91,13 @@ describe Cucloud::RdsUtils do
 
     describe '#delete_db_instance?' do
       it 'should not raise error' do
-        expect{rds_utils.delete_db_instance('testDb')}.not_to raise_error
+        expect { rds_utils.delete_db_instance('testDb') }.not_to raise_error
       end
     end
 
     describe '#delete_db_instance?' do
       it 'should not exist' do
-        expect{rds_utils.delete_db_instance('testDb', '111111')}.not_to raise_error
+        expect { rds_utils.delete_db_instance('testDb', '111111') }.not_to raise_error
       end
     end
   end
@@ -112,12 +111,38 @@ describe Cucloud::RdsUtils do
           mock_snapshot.merge(db_snapshot_identifier: 'snap2', snapshot_create_time: Time.new(2008))
         ]
       )
+      rds_client.stub_responses(
+        :restore_db_instance_from_db_snapshot,
+        db_instance: {
+          db_instance_identifier: 'testDb'
+        }
+      )
+      rds_client.stub_responses(
+        :describe_db_instances,
+        db_instances: [
+          {
+            db_instance_identifier: 'testDb',
+            instance_create_time: Time.new('2016-09-26 17:53:05 UTC')
+          }
+        ]
+      )
     end
 
     describe '#find_latest_snapshot' do
       it 'should return a snapshot identifier' do
         expect(rds_utils.find_latest_snapshot(db_instance.id)).to eq 'snap2'
       end
+    end
+
+    describe '#restore_db' do
+      it 'should not raise error with non existant db' do
+        expect { rds_utils.restore_db('testDb', 'prodDb') }.not_to raise_error
+      end
+
+      it 'should not raise error with non existant db, specifying snapshot id' do
+        expect { rds_utils.restore_db('testDb', nil, db_snapshot_identifier: 'snap1') }.not_to raise_error
+      end
+
     end
   end
 
@@ -150,6 +175,12 @@ describe Cucloud::RdsUtils do
       describe '#does_db_exist?' do
         it ' should exist' do
           expect(rds_utils.does_db_exist?('testDb')).to eq true
+        end
+      end
+
+      describe '#restore_db' do
+        it 'should not raise error with non existant db' do
+          expect { rds_utils.restore_db('testDb', 'prodDb') }.not_to raise_error
         end
       end
     end

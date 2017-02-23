@@ -23,12 +23,16 @@ module Cucloud
       false
     end
 
+    # Delete a givne db instance
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @param db_snapshot_identifier [String] Name for final snapshot, default is nil
     def delete_db_instance(db_instance_identifier, db_snapshot_identifier = nil)
       if does_db_exist?(db_instance_identifier)
         if db_snapshot_identifier.nil?
           @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, skip_final_snapshot: true)
         else
-          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, final_db_snapshot_identifier: db_snapshot_identifier)
+          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier,
+                                  final_db_snapshot_identifier: db_snapshot_identifier)
         end
 
         @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
@@ -37,35 +41,22 @@ module Cucloud
       end
     end
 
-    # def restore_db(options)
-    #   db_id = options[:db_instance_identifier]
-    #   db_subnet_group_name = if options[:db_subnet_group_name].nil?
-    #                            'private'
-    #                          else
-    #                            options[:db_subnet_group_name]
-    #                          end
-    #   puts "SUBNET GROUP NAME #{db_subnet_group_name}"
-    #
-    #   restore_from = options[:restore_from] || 'clkprod'
-    #
-    #   if !does_db_exist?(db_id)
-    #     db_name = options[:db_name]
-    #     db_snapshot_identifier = options[:db_snapshot_identifier].nil? ? find_latest_snapshot(db_instance_identifier: restore_from) : options[:db_snapshot_identifier]
-    #     db_instance_class = options[:db_instance_class].nil? ? 'db.t2.large' : options[:db_instance_class]
-    #     db_option_group = options[:option_group_name].nil? ? 'kuali-oracle-options' : options[:option_group_name]
-    #
-    #     @RDS.client.restore_db_instance_from_db_snapshot(db_name: db_name,
-    #                                                      db_instance_identifier: db_id,
-    #                                                      db_snapshot_identifier: db_snapshot_identifier,
-    #                                                      db_instance_class: db_instance_class,
-    #                                                      db_subnet_group_name: db_subnet_group_name,
-    #                                                      availability_zone: 'us-east-1d',
-    #                                                      option_group_name: db_option_group)
-    #   else
-    #     puts "#{db_id} already exist"
-    #   end
-    # end
+    # Restore DB from a snapshot
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @param db_snapshot_identifier [String] Name for final snapshot, default is nil
+    def restore_db(db_instance_identifier, restore_from, options = {})
+      unless does_db_exist?(db_instance_identifier)
+        db_snapshot_identifier =
+          options[:db_snapshot_identifier].nil? ? find_latest_snapshot(restore_from) : options[:db_snapshot_identifier]
+        options.merge(db_instance_identifier: db_instance_identifier,
+                      db_snapshot_identifier: db_snapshot_identifier)
+        @rds.restore_db_instance_from_db_snapshot(options)
+      end
+    end
 
+    # Delete a givne db instance
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @return [String] Most recent snapshot ID for given RDS instance
     def find_latest_snapshot(db_instance_identifier)
       latest_snapshot_time = Time.new(2002)
       latest_snap_shot = nil
@@ -80,7 +71,7 @@ module Cucloud
         end
       end
 
-       latest_snap_shot.nil? ? nil : latest_snap_shot[:db_snapshot_identifier]
+      latest_snap_shot.nil? ? nil : latest_snap_shot[:db_snapshot_identifier]
     end
 
     # Begins the creation of a snapshot of the given RDS instance.

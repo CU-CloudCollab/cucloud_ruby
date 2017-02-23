@@ -68,7 +68,7 @@ describe Cucloud::IamUtils do
       end
 
       it 'should raise an error if no cert name is given' do
-        expect{iam_util.get_cert_arn(nil)}.to raise_error
+        expect { iam_util.get_cert_arn(nil) }.to raise_error
       end
     end
   end
