@@ -9,16 +9,16 @@ module Cucloud
       @cfn = cfn
     end
 
-    # Apply cloud formation template to account
-    # @param stack_name [string] name of the the stack to apply
+    # Create cloud formation stack from template
+    # @param stack_name [string] name of the the cfn stack
     # @param template_json [string] file path to cfn template json
     # @return [String] representing the stack events from the run
     def create_stack(stack_name, template_json)
       manage_stack(stack_name, template_json)
     end
 
-    # Update cloud formation template to account
-    # @param stack_name [string] name of the the stack to apply
+    # Update cloud formation stack from template
+    # @param stack_name [string] name of the the cfn stack
     # @param template_json [string] file path to cfn template json
     # @return [String] representing the stack events from the run
     def update_stack(stack_name, template_json)
@@ -27,9 +27,9 @@ module Cucloud
 
     private
 
-    # Manage cloud formation template to account, abstracts logic
-    # for both the create and update
-    # @param stack_name [string] name of the the stack to apply
+    # Manage cloud formation stack from template,
+    # abstracts logic for both the create and update
+    # @param stack_name [string] name of the the cfn stack
     # @param template_json [string] file path to cfn template json
     # @return [String] representing the stack events from the run
     def manage_stack(stack_name, template_json, action = :create_stack)
