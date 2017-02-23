@@ -48,8 +48,8 @@ module Cucloud
       unless does_db_exist?(db_instance_identifier)
         db_snapshot_identifier =
           options[:db_snapshot_identifier].nil? ? find_latest_snapshot(restore_from) : options[:db_snapshot_identifier]
-        options.merge(db_instance_identifier: db_instance_identifier,
-                      db_snapshot_identifier: db_snapshot_identifier)
+        options[:db_instance_identifier] = db_instance_identifier
+        options[:db_snapshot_identifier] = db_snapshot_identifier
         @rds.restore_db_instance_from_db_snapshot(options)
       end
     end

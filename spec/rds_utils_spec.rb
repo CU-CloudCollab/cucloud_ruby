@@ -57,6 +57,18 @@ describe Cucloud::RdsUtils do
         :describe_db_instances,
         Aws::RDS::Errors::DBInstanceNotFound.new('test', 'test')
       )
+      rds_client.stub_responses(
+        :restore_db_instance_from_db_snapshot,
+        db_instance: {
+          db_instance_identifier: 'testDb'
+        }
+      )
+      rds_client.stub_responses(
+        :describe_db_snapshots,
+        db_snapshots: [
+          mock_snapshot
+        ]
+      )
     end
 
     describe '#does_db_exist?' do
@@ -68,6 +80,16 @@ describe Cucloud::RdsUtils do
     describe '#delete_db_instance' do
       it 'should raise error with non existant db' do
         expect { rds_utils.delete_db_instance('testDb') }.to raise_error Aws::RDS::Errors::DBInstanceNotFound
+      end
+    end
+
+    describe '#restore_db' do
+      it 'should not raise error with non existant db' do
+        expect { rds_utils.restore_db('testDb', 'prodDb') }.not_to raise_error
+      end
+
+      it 'should not raise error with non existant db, specifying snapshot id' do
+        expect { rds_utils.restore_db('testDb', nil, db_snapshot_identifier: 'snap1') }.not_to raise_error
       end
     end
   end
@@ -85,7 +107,6 @@ describe Cucloud::RdsUtils do
         db_instances: [
           db_instance_status: 'deleted'
         ]
-
       )
     end
 
@@ -112,12 +133,6 @@ describe Cucloud::RdsUtils do
         ]
       )
       rds_client.stub_responses(
-        :restore_db_instance_from_db_snapshot,
-        db_instance: {
-          db_instance_identifier: 'testDb'
-        }
-      )
-      rds_client.stub_responses(
         :describe_db_instances,
         db_instances: [
           {
@@ -132,17 +147,6 @@ describe Cucloud::RdsUtils do
       it 'should return a snapshot identifier' do
         expect(rds_utils.find_latest_snapshot(db_instance.id)).to eq 'snap2'
       end
-    end
-
-    describe '#restore_db' do
-      it 'should not raise error with non existant db' do
-        expect { rds_utils.restore_db('testDb', 'prodDb') }.not_to raise_error
-      end
-
-      it 'should not raise error with non existant db, specifying snapshot id' do
-        expect { rds_utils.restore_db('testDb', nil, db_snapshot_identifier: 'snap1') }.not_to raise_error
-      end
-
     end
   end
 
