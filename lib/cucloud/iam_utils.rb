@@ -157,5 +157,16 @@ module Cucloud
         get_user_access_keys(user[:base_data].user_name).select { |k| k[:days_old] > n && k[:active] }
       end.flatten
     end
+
+    # Gets the ARN for a given certificate
+    # @param [String] cert_name The name of the certificate
+    # @param [String] The ARN for the certificate
+    # @raise [ArgumentError] If the provided certificate name is nil
+    def get_cert_arn(cert_name)
+      raise ArgumentError, '"cert_name" may not be nil' if cert_name.nil?
+
+      cert = @iam.get_server_certificate(server_certificate_name: cert_name)
+      cert.server_certificate.server_certificate_metadata.arn
+    end
   end
 end

@@ -1,10 +1,13 @@
 module Cucloud
   # Utilities library for interacting with KMS.
   class KmsUtils
+    # Class to represent missing key error
     class MissingKmsKey < StandardError
     end
 
+    # This is used in a sttuct to denote an encrypted field
     ENCRYPTED_SUFFIX = '_encrypted'.freeze
+    # This is used in a sttuct to denote an decrypted field
     DECRYPTED_SUFFIX = '_decrypted'.freeze
 
     attr_accessor :kms_key_id

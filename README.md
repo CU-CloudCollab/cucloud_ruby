@@ -48,6 +48,7 @@ Note - the cucloud library assumes that environment credentials are available to
 Utilities that use this API:
 
 * Autoscale AMI Updater: https://github.com/CU-CloudCollab/asg-ami-update
+* Collection of Handy Cloud Utilities: https://github.com/CU-CloudCollab/cucloud_utils
 
 
 ## Development
