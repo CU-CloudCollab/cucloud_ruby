@@ -29,7 +29,7 @@ describe Cucloud::RdsUtils do
       master_username: 'String',
       engine_version: 'String',
       license_model: 'String',
-      snapshot_type: 'String',
+      snapshot_type: 'manual',
       iops: 0,
       option_group_name: 'String',
       percent_progress: 0,
@@ -183,8 +183,8 @@ describe Cucloud::RdsUtils do
       end
 
       describe '#restore_db' do
-        it 'should not raise error with non existant db' do
-          expect { rds_utils.restore_db('testDb', 'prodDb') }.not_to raise_error
+        it 'should raise error with non existant db' do
+          expect { rds_utils.restore_db('testDb', 'prodDb') }.to raise_error Cucloud::RdsUtils::RDSInstanceAlreadyExist
         end
       end
     end

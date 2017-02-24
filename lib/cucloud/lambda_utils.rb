@@ -37,7 +37,7 @@ module Cucloud
 
     # Return all funtion names for an account
     # @return [Array] Array of strings representing the function names
-    def get_all_function_names_for_account
+    def get_all_function_names_for_account_region
       funtions_response = @lambda.list_functions
       funtions_response.functions.map { |x| x[:function_name] }
     end

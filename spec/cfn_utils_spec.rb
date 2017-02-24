@@ -47,7 +47,7 @@ describe Cucloud::CfnUtils do
     end
   end
 
-  context 'while create_stack returns an error' do
+  context 'while create_stack is stubbed out' do
     before do
       cfn_client.stub_responses(
         :create_stack,
@@ -74,7 +74,7 @@ describe Cucloud::CfnUtils do
     end
 
     describe '#create_stack' do
-      it 'raises an error' do
+      it 'does not raise an error' do
         allow(IO).to receive(:read).with('file').and_return('some_data')
         expect { cfn_util.create_stack('teststack', 'file') }.not_to raise_error
       end

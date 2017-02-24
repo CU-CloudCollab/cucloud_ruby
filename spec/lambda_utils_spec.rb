@@ -61,7 +61,7 @@ describe Cucloud::LambdaUtils do
     end
   end
 
-  context 'while Lambda list_functions is stubbed oout' do
+  context 'while Lambda list_functions is stubbed out' do
     before do
       lambda_client.stub_responses(
         :list_functions,
@@ -71,9 +71,9 @@ describe Cucloud::LambdaUtils do
       )
     end
 
-    describe '#get_all_function_names_for_account' do
+    describe '#get_all_function_names_for_account_region' do
       it 'should return without an error' do
-        functions = lambda_utils.get_all_function_names_for_account
+        functions = lambda_utils.get_all_function_names_for_account_region
         expect(functions.length).to be 3
         expect(%w(A B C) - functions).to be_empty
       end

@@ -1,6 +1,11 @@
 module Cucloud
   # RdsUtils class - for interacting with the AWS relational database service
   class RdsUtils
+    # RDSInstanceAlreadyExist Class - capture erros when creating or restoring
+    # an RDS instance which already exist
+    class RDSInstanceAlreadyExist < StandardError
+    end
+
     def initialize(rds_client = Aws::RDS::Client.new)
       @rds = rds_client
     end
@@ -45,22 +50,24 @@ module Cucloud
     # @param db_instance_identifier [String] RDS instance identifier
     # @param db_snapshot_identifier [String] Name for final snapshot, default is nil
     def restore_db(db_instance_identifier, restore_from, options = {})
-      unless does_db_exist?(db_instance_identifier)
-        db_snapshot_identifier =
-          options[:db_snapshot_identifier].nil? ? find_latest_snapshot(restore_from) : options[:db_snapshot_identifier]
-        options[:db_instance_identifier] = db_instance_identifier
-        options[:db_snapshot_identifier] = db_snapshot_identifier
-        @rds.restore_db_instance_from_db_snapshot(options)
-      end
+      raise RDSInstanceAlreadyExist if does_db_exist?(db_instance_identifier)
+
+      db_snapshot_identifier =
+        options[:db_snapshot_identifier].nil? ? find_latest_snapshot(restore_from) : options[:db_snapshot_identifier]
+      options[:db_instance_identifier] = db_instance_identifier
+      options[:db_snapshot_identifier] = db_snapshot_identifier
+      @rds.restore_db_instance_from_db_snapshot(options)
     end
 
     # Delete a givne db instance
     # @param db_instance_identifier [String] RDS instance identifier
     # @return [String] Most recent snapshot ID for given RDS instance
-    def find_latest_snapshot(db_instance_identifier)
+    def find_latest_snapshot(db_instance_identifier, snapshot_type = 'manual')
       latest_snapshot_time = Time.new(2002)
       latest_snap_shot = nil
-      snapshots_info = @rds.describe_db_snapshots(db_instance_identifier: db_instance_identifier)[:db_snapshots]
+      snapshots_info = @rds.describe_db_snapshots(
+        db_instance_identifier: db_instance_identifier, snapshot_type: snapshot_type
+      )[:db_snapshots]
 
       snapshots_info.each do |snapshot_info|
         next if snapshot_info[:status] != 'available'
