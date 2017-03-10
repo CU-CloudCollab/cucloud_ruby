@@ -64,11 +64,42 @@ describe Cucloud::RdsUtils do
       it 'shoud not rais an error' do
         expect { rds_utils.modify_security_group('testDb', ['sg-084646']) }.not_to raise_error
       end
+
+      it 'should get the correct default parameters' do
+        expect(rds_client).to receive(:modify_db_instance).with(db_instance_identifier: 'testDb',
+                                                                vpc_security_group_ids: ['sg-084646'],
+                                                                apply_immediately: true,
+                                                                copy_tags_to_snapshot: true)
+        rds_utils.modify_security_group('testDb', ['sg-084646'])
+      end
     end
 
     describe '#modify_option_group' do
       it 'shoud not rais an error' do
         expect { rds_utils.modify_option_group('testDb', 'options-group') }.not_to raise_error
+      end
+
+      it 'should get the correct default parameters' do
+        expect(rds_client).to receive(:modify_db_instance).with(db_instance_identifier: 'testDb',
+                                                                option_group_name: 'options-group',
+                                                                apply_immediately: true,
+                                                                copy_tags_to_snapshot: true)
+        rds_utils.modify_option_group('testDb', 'options-group')
+      end
+    end
+
+    describe '#modify_db_instance' do
+      it 'should allow your to override default values' do
+        expect(rds_client).to receive(:modify_db_instance).with(db_instance_identifier: 'testDb',
+                                                                option_group_name: 'options-group',
+                                                                apply_immediately: false,
+                                                                copy_tags_to_snapshot: false)
+        rds_utils.modify_db_instance(
+          db_instance_identifier: 'testDb',
+          option_group_name: 'options-group',
+          apply_immediately: false,
+          copy_tags_to_snapshot: false
+        )
       end
     end
   end
@@ -77,13 +108,13 @@ describe Cucloud::RdsUtils do
     before do
       rds_client.stub_responses(
         :describe_db_instances,
-        Aws::RDS::Errors::DBInstanceNotFound.new('test', 'test')
-      )
-      rds_client.stub_responses(
-        :restore_db_instance_from_db_snapshot,
-        db_instance: {
-          db_instance_identifier: 'testDb'
-        }
+        [
+          Aws::RDS::Errors::DBInstanceNotFound.new('test', 'test'),
+          { db_instances: [
+            db_instance_identifier: 'testDb',
+            db_instance_status: 'available'
+          ] }
+        ]
       )
       rds_client.stub_responses(
         :describe_db_snapshots,
@@ -116,7 +147,7 @@ describe Cucloud::RdsUtils do
     end
   end
 
-  context 'while describe_db_instances is returns an instand not found error' do
+  context 'while describe_db_instances is mocked out' do
     before do
       rds_client.stub_responses(
         :delete_db_instance,
