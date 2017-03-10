@@ -24,7 +24,7 @@ module Cucloud
     def does_db_exist?(db_instance_identifier)
       get_instance(db_instance_identifier).instance_create_time
       true
-    rescue Aws::RDS::Errors::DBInstanceNotFound
+    rescue
       false
     end
 
@@ -46,6 +46,32 @@ module Cucloud
       end
     end
 
+    # Modify the security groups for a RDS instance
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @param vpc_security_group_ids [Array] Array of security groups to apply
+    # @return [Hash] Hash represnting the return from AWS
+    def modify_security_group(db_instance_identifier, vpc_security_groups)
+      modify_db_instance(db_instance_identifier: db_instance_identifier, vpc_security_group_ids: vpc_security_groups)
+    end
+
+    # Modify the options group for a RDS instance
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @param option_group_name [Sting] Name od the options group to apply
+    # @return [Hash] Hash represnting the return from AWS
+    def modify_option_group(db_instance_identifier, option_group_name)
+      modify_db_instance(db_instance_identifier: db_instance_identifier, option_group_name: option_group_name)
+    end
+
+    # Base function to modify DB, resets defualts for apply_immediately and copy_tags_to_snapshot
+    # @param options [hash] Hash represnting the configuration for the RDS restore
+    # @return [Hash] Hash represnting the return from AWS
+    def modify_db_instance(options)
+      options[:apply_immediately] = options[:apply_immediately].nil? ? true : options[:apply_immediately]
+      options[:copy_tags_to_snapshot] = options[:copy_tags_to_snapshot].nil? ? true : options[:copy_tags_to_snapshot]
+
+      @rds.modify_db_instance(options)
+    end
+
     # Restore DB from a snapshot
     # @param db_instance_identifier [String] RDS instance identifier
     # @param db_snapshot_identifier [String] Name for final snapshot, default is nil
@@ -57,6 +83,7 @@ module Cucloud
       options[:db_instance_identifier] = db_instance_identifier
       options[:db_snapshot_identifier] = db_snapshot_identifier
       @rds.restore_db_instance_from_db_snapshot(options)
+      @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
     end
 
     # Delete a givne db instance

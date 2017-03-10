@@ -51,7 +51,29 @@ describe Cucloud::RdsUtils do
     expect(Cucloud::RdsUtils.new(rds_client)).to be_a_kind_of(Cucloud::RdsUtils)
   end
 
-  context 'while describe_db_instances is returns an instand not found error' do
+  context 'while modify_db_instance is stubbed out' do
+    before do
+      rds_client.stub_responses(
+        :modify_db_instance,
+        db_instance: {
+          db_instance_identifier: 'testDb'
+        }
+      )
+    end
+    describe '#modify_security_group' do
+      it 'shoud not rais an error' do
+        expect { rds_utils.modify_security_group('testDb', ['sg-084646']) }.not_to raise_error
+      end
+    end
+
+    describe '#modify_option_group' do
+      it 'shoud not rais an error' do
+        expect { rds_utils.modify_option_group('testDb', 'options-group') }.not_to raise_error
+      end
+    end
+  end
+
+  context 'while describe_db_instances returns an instand not found error' do
     before do
       rds_client.stub_responses(
         :describe_db_instances,
