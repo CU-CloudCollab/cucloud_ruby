@@ -65,6 +65,12 @@ describe Cucloud::RdsUtils do
         expect { rds_utils.modify_security_group('testDb', ['sg-084646']) }.not_to raise_error
       end
     end
+
+    describe '#modify_option_group' do
+      it 'shoud not rais an error' do
+        expect { rds_utils.modify_option_group('testDb', 'options-group') }.not_to raise_error
+      end
+    end
   end
 
   context 'while describe_db_instances returns an instand not found error' do
