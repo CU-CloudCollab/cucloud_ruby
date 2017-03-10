@@ -31,7 +31,8 @@ describe Cucloud::Ec2Utils do
             { instance_id: 'i-1',
               state: { name: 'running' },
               tags: [
-                { key: 'Name', value: 'example-1' }
+                { key: 'Name', value: 'example-1' },
+                { key: 'Environment', value: 'test'}
               ] }
           ]
         }]
@@ -60,6 +61,9 @@ describe Cucloud::Ec2Utils do
           { volume_id: 'vol-def',
             attachments: [
               instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Application', value: 'testapp' }
             ] }
         ]
       )
