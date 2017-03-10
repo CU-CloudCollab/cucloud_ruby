@@ -32,7 +32,7 @@ describe Cucloud::Ec2Utils do
               state: { name: 'running' },
               tags: [
                 { key: 'Name', value: 'example-1' },
-                { key: 'Environment', value: 'test'}
+                { key: 'Environment', value: 'test' }
               ] }
           ]
         }]
