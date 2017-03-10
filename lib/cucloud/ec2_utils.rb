@@ -179,10 +179,11 @@ module Cucloud
       snapshot_info
     end
 
-    # Preforms a backup on volumes that do not have a recent snapshot_info
+    # Performs a backup on volumes that do not have a recent snapshot_info
     # @param days [Integer] defaults to 5
+    # @param preserve_tags [Array] Array of tags from volume or instance to apply to snapshot
     # @return [Array<Hash>]  An array of hashes containing snapshot_id, instance_name and volume
-    def backup_volumes_unless_recent_backup(days = 5)
+    def backup_volumes_unless_recent_backup(days = 5, preserve_tags = ['Application', 'Cost Center', 'Environment'])
       volumes_backed_up_recently = volumes_with_snapshot_within_last_days(days)
       snapshots_created = []
 
@@ -192,6 +193,17 @@ module Cucloud
         instance_name = get_instance_name(volume.attachments[0].instance_id)
 
         tags = instance_name ? [{ key: 'Instance Name', value: instance_name }] : []
+        volume.tags.each do |tag|
+          if preserve_tags.include?(tag.key) && !tags.any? { |tagitem| tagitem[:key] == tag.key }
+            tags << tag
+          end
+        end
+        instance = get_instance(volume.attachments[0].instance_id)
+        instance.tags.each do |tag|
+          if preserve_tags.include?(tag.key) && !tags.any? { |tagitem| tagitem[:key] == tag.key }
+            tags << tag
+          end
+        end
         snapshot_info = create_ebs_snapshot(volume.volume_id,
                                             'auto-ebs-snap-' + Time.now.strftime('%Y-%m-%d-%H:%M:%S'),
                                             tags)
