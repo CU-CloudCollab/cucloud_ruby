@@ -54,7 +54,7 @@ module Cucloud
       modify_db_instance(db_instance_identifier: db_instance_identifier, vpc_security_group_ids: vpc_security_groups)
     end
 
-    # Modify the security groups for a RDS instance
+    # Modify the options group for a RDS instance
     # @param db_instance_identifier [String] RDS instance identifier
     # @param option_group_name [Sting] Name od the options group to apply
     # @return [Hash] Hash represnting the return from AWS
