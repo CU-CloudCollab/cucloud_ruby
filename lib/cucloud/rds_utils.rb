@@ -58,8 +58,8 @@ module Cucloud
     # @param db_instance_identifier [String] RDS instance identifier
     # @param option_group_name [Sting] Name od the options group to apply
     # @return [Hash] Hash represnting the return from AWS
-    def modify_option_group(_db_instance_identifier, option_group_name)
-      modify_db_instance(db_instance_identifier: db_id, option_group_name: option_group_name)
+    def modify_option_group(db_instance_identifier, option_group_name)
+      modify_db_instance(db_instance_identifier: db_instance_identifier, option_group_name: option_group_name)
     end
 
     # Base function to modify DB, resets defualts for apply_immediately and copy_tags_to_snapshot
