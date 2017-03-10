@@ -83,7 +83,7 @@ module Cucloud
       options[:db_instance_identifier] = db_instance_identifier
       options[:db_snapshot_identifier] = db_snapshot_identifier
       @rds.restore_db_instance_from_db_snapshot(options)
-      @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
+      @rds.wait_until(:db_instance_available, db_instance_identifier: db_instance_identifier)
     end
 
     # Delete a givne db instance
