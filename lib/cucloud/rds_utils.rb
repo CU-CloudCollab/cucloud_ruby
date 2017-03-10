@@ -24,7 +24,7 @@ module Cucloud
     def does_db_exist?(db_instance_identifier)
       get_instance(db_instance_identifier).instance_create_time
       true
-    rescue Aws::RDS::Errors::DBInstanceNotFound
+    rescue
       false
     end
 
