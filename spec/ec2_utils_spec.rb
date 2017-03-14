@@ -130,7 +130,219 @@ describe Cucloud::Ec2Utils do
         [
           snapshot_id: 'snap-def',
           instance_name: 'example-1',
-          volume: 'vol-def'
+          volume: 'vol-def',
+          tags: [
+            { key: 'Instance Name', value: 'example-1' }
+          ]
+        ]
+      )
+    end
+
+    it 'should include volume tags in snapshots when asked' do
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-ghi',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' }
+            ] },
+          { volume_id: 'vol-jkl',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' },
+              { key: 'Tag3', value: 'tag-3' }
+            ] }
+        ]
+      )
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5, %w(Tag1 Tag3))
+      expect(snapshots_created).to match_array(
+        [
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-ghi',
+            tags: [
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1')
+            ]
+          },
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-jkl',
+            tags: [
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1'),
+              Aws::EC2::Types::Tag.new(key: 'Tag3', value: 'tag-3')
+            ]
+          }
+        ]
+      )
+    end
+
+    it 'should include additional tags in snapshots when asked' do
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-ghi',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' }
+            ] },
+          { volume_id: 'vol-jkl',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' },
+              { key: 'Tag3', value: 'tag-3' }
+            ] }
+        ]
+      )
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
+                                                                      %w(Tag1 Tag3),
+                                                                      [
+                                                                        { key: 'MyTag1', value: 'value-1' },
+                                                                        { key: 'MyTag2', value: 'value-2' }
+                                                                      ])
+      expect(snapshots_created).to match_array(
+        [
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-ghi',
+            tags: [
+              { key: 'MyTag1', value: 'value-1' },
+              { key: 'MyTag2', value: 'value-2' },
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1')
+            ]
+          },
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-jkl',
+            tags: [
+              { key: 'MyTag1', value: 'value-1' },
+              { key: 'MyTag2', value: 'value-2' },
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1'),
+              Aws::EC2::Types::Tag.new(key: 'Tag3', value: 'tag-3')
+            ]
+          }
+        ]
+      )
+    end
+
+    it 'should include override volume tags in snapshots when asked' do
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-ghi',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' }
+            ] },
+          { volume_id: 'vol-jkl',
+            attachments: [
+              instance_id: 'i-1'
+            ],
+            tags: [
+              { key: 'Tag1', value: 'tag-1' },
+              { key: 'Tag2', value: 'tag-2' },
+              { key: 'Tag3', value: 'tag-3' }
+            ] }
+        ]
+      )
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
+                                                                      %w(Tag1 Tag3),
+                                                                      [
+                                                                        { key: 'MyTag1', value: 'value-1' },
+                                                                        { key: 'MyTag2', value: 'value-2' },
+                                                                        { key: 'Tag3', value: 'value-3' }
+                                                                      ])
+      expect(snapshots_created).to match_array(
+        [
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-ghi',
+            tags: [
+              { key: 'MyTag1', value: 'value-1' },
+              { key: 'MyTag2', value: 'value-2' },
+              { key: 'Tag3', value: 'value-3' },
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1')
+            ]
+          },
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-jkl',
+            tags: [
+              { key: 'MyTag1', value: 'value-1' },
+              { key: 'MyTag2', value: 'value-2' },
+              { key: 'Tag3', value: 'value-3' },
+              { key: 'Instance Name', value: 'example-1' },
+              Aws::EC2::Types::Tag.new(key: 'Tag1', value: 'tag-1')
+            ]
+          }
+        ]
+      )
+    end
+
+    it 'should include instance name tag in snapshots when asked' do
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-ghi',
+            attachments: [
+              instance_id: 'i-1'
+            ] },
+          { volume_id: 'vol-jkl',
+            attachments: [
+              instance_id: 'i-1'
+            ] }
+        ]
+      )
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
+                                                                      %w(),
+                                                                      [
+                                                                        { key: 'Instance Name',
+                                                                          value: 'NOT-example-1' }
+                                                                      ])
+      expect(snapshots_created).to match_array(
+        [
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-ghi',
+            tags: [
+              { key: 'Instance Name', value: 'NOT-example-1' }
+            ]
+          },
+          {
+            snapshot_id: 'snap-def',
+            instance_name: 'example-1',
+            volume: 'vol-jkl',
+            tags: [
+              { key: 'Instance Name', value: 'NOT-example-1' }
+            ]
+          }
         ]
       )
     end

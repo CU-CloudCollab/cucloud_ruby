@@ -210,7 +210,8 @@ module Cucloud
 
         snapshots_created.push(snapshot_id: snapshot_info.snapshot_id,
                                instance_name: instance_name,
-                               volume: volume.volume_id)
+                               volume: volume.volume_id,
+                               tags: tags)
       end
 
       snapshots_created
