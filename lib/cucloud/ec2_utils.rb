@@ -179,10 +179,14 @@ module Cucloud
       snapshot_info
     end
 
-    # Preforms a backup on volumes that do not have a recent snapshot_info
+    # Performs a backup on volumes that do not have a recent snapshot_info
+    # Tags specified in additional_snapshot_tags[] will take precedence over tags we would
+    #    normally create or would have copied from the volume via preserve_tags[].
     # @param days [Integer] defaults to 5
+    # @param preserve_volume_tags [Array] Array of tag keys to copy from from volume, if present.
+    # @param additional_snapshot_tags [Array] Array of hashes containing additional tags to apply,
     # @return [Array<Hash>]  An array of hashes containing snapshot_id, instance_name and volume
-    def backup_volumes_unless_recent_backup(days = 5)
+    def backup_volumes_unless_recent_backup(days = 5, preserve_volume_tags = [], additional_snapshot_tags = [])
       volumes_backed_up_recently = volumes_with_snapshot_within_last_days(days)
       snapshots_created = []
 
@@ -190,15 +194,24 @@ module Cucloud
       volumes.volumes.each do |volume|
         next if volumes_backed_up_recently[volume.volume_id.to_s]
         instance_name = get_instance_name(volume.attachments[0].instance_id)
+        tags = additional_snapshot_tags.dup
+        unless tags.any? { |tagitem| tagitem[:key] == 'Instance Name' }
+          tags << { key: 'Instance Name', value: instance_name }
+        end
+        volume.tags.each do |tag|
+          if preserve_volume_tags.include?(tag.key) && !tags.any? { |tagitem| tagitem[:key] == tag.key }
+            tags << tag
+          end
+        end
 
-        tags = instance_name ? [{ key: 'Instance Name', value: instance_name }] : []
         snapshot_info = create_ebs_snapshot(volume.volume_id,
                                             'auto-ebs-snap-' + Time.now.strftime('%Y-%m-%d-%H:%M:%S'),
                                             tags)
 
         snapshots_created.push(snapshot_id: snapshot_info.snapshot_id,
                                instance_name: instance_name,
-                               volume: volume.volume_id)
+                               volume: volume.volume_id,
+                               tags: tags)
       end
 
       snapshots_created
