@@ -126,9 +126,13 @@ describe Cucloud::Ec2Utils do
 
     it 'should backup volumes that do not have a recent snapshot' do
       snapshots_created = ec_util.backup_volumes_unless_recent_backup
-      expect(snapshots_created[0][:snapshot_id]).to eq 'snap-def'
-      expect(snapshots_created[0][:instance_name]).to eq 'example-1'
-      expect(snapshots_created[0][:volume]).to eq 'vol-def'
+      expect(snapshots_created).to match_array(
+        [
+          snapshot_id: 'snap-def',
+          instance_name: 'example-1',
+          volume: 'vol-def'
+        ]
+      )
     end
 
     it 'should create an ebs snapshot' do
