@@ -31,8 +31,7 @@ describe Cucloud::Ec2Utils do
             { instance_id: 'i-1',
               state: { name: 'running' },
               tags: [
-                { key: 'Name', value: 'example-1' },
-                { key: 'Environment', value: 'test' }
+                { key: 'Name', value: 'example-1' }
               ] }
           ]
         }]
@@ -61,9 +60,6 @@ describe Cucloud::Ec2Utils do
           { volume_id: 'vol-def',
             attachments: [
               instance_id: 'i-1'
-            ],
-            tags: [
-              { key: 'Application', value: 'testapp' }
             ] }
         ]
       )
@@ -82,11 +78,11 @@ describe Cucloud::Ec2Utils do
       expect(Cucloud::Ec2Utils.new).to be_a_kind_of(Cucloud::Ec2Utils)
     end
 
-    it 'dependency injectin ec2_client should be successful' do
+    it 'dependency injection ec2_client should be successful' do
       expect(Cucloud::Ec2Utils.new(ec2_client)).to be_a_kind_of(Cucloud::Ec2Utils)
     end
 
-    it "'get_instances_by_tag' should return '> 1' where tage_name= Name, and tag_value= example-1" do
+    it "'get_instances_by_tag' should return '> 1' where tag_name= Name, and tag_value= example-1" do
       expect(ec_util.get_instances_by_tag('Name', ['example-1']).to_a.size).to eq 1
     end
 
@@ -122,7 +118,7 @@ describe Cucloud::Ec2Utils do
       expect(ec_util.get_instance_name('i-1')).to eq 'example-1'
     end
 
-    it 'should find volumes that have no shapshots in the last five days (default)' do
+    it 'should find volumes that have no snapshots in the last five days (default)' do
       volumes = ec_util.volumes_with_snapshot_within_last_days
       expect(volumes['vol-abc']).to be true
       expect(volumes['vol-def']).to be_nil
