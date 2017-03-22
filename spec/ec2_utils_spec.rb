@@ -347,6 +347,42 @@ describe Cucloud::Ec2Utils do
       )
     end
 
+    it 'should not apply instance_name tags to snapshots of instances that have no name tag' do
+      ec2_client.stub_responses(
+        :describe_instances,
+        next_token: nil,
+        reservations: [{
+          instances: [
+            { instance_id: 'i-1',
+              state: { name: 'running' },
+              tags: [
+              ] }
+          ]
+        }]
+      )
+
+      ec2_client.stub_responses(
+        :describe_volumes,
+        volumes: [
+          { volume_id: 'vol-mno',
+            attachments: [
+              instance_id: 'i-1'
+            ] }
+        ]
+      )
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5)
+      expect(snapshots_created).to match_array(
+        [
+          {
+            snapshot_id: 'snap-def',
+            instance_name: nil,
+            volume: 'vol-mno',
+            tags: []
+          }
+        ]
+      )
+    end
+
     it 'should create an ebs snapshot' do
       snapshots_created = ec_util.create_ebs_snapshot('i-1', 'desc')
       expect(snapshots_created[:snapshot_id]).to eq 'snap-def'
