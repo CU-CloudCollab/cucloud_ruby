@@ -195,7 +195,7 @@ module Cucloud
         next if volumes_backed_up_recently[volume.volume_id.to_s]
         instance_name = get_instance_name(volume.attachments[0].instance_id)
         tags = additional_snapshot_tags.dup
-        unless tags.any? { |tagitem| tagitem[:key] == 'Instance Name' }
+        unless instance_name.nil? || tags.any? { |tagitem| tagitem[:key] == 'Instance Name' }
           tags << { key: 'Instance Name', value: instance_name }
         end
         volume.tags.each do |tag|
