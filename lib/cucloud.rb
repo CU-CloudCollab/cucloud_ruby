@@ -1,4 +1,5 @@
 require 'aws-sdk'
+require 'descriptive_statistics'
 
 # Main Cucloud Module namespace and defaults
 module Cucloud
@@ -15,6 +16,7 @@ module Cucloud
   require 'cucloud/rds_utils'
   require 'cucloud/lambda_utils'
   require 'cucloud/cfn_utils'
+  require 'cucloud/utilities'
 
   # This is the default region API calls are made against
   DEFAULT_REGION = 'us-east-1'.freeze

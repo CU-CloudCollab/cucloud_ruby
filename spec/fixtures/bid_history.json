@@ -1,0 +1,413 @@
+{
+  "next_token": "",
+  "spot_price_history": [
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.081000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.077000"
+    },
+    {
+      "availability_zone": "us-west-1a",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.083000"
+    },
+    {
+      "availability_zone": "us-west-1c",
+      "instance_type": "m3.medium",
+      "product_description": "Linux/UNIX (Amazon VPC)",
+      "spot_price": "0.080000"
+    }
+  ]
+}
