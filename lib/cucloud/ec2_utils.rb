@@ -11,6 +11,10 @@ module Cucloud
     WAITER_MAX_ATTEMPS = 240
     # Delay between calls used by waiter to check status
     WAITER_DELAY = 15
+    # Two weeks in hours
+    TWO_WEEKS = 336
+    # Default OS to use
+    DEFAULT_OS = 'Linux/UNIX'.freeze
 
     def initialize(ec2_client = Aws::EC2::Client.new, ssm_utils = Cucloud::SSMUtils.new)
       @ec2 = ec2_client
@@ -252,6 +256,65 @@ module Cucloud
         end
       end
       found_snapshots
+    end
+
+    # Get a recommendation for a spot bid request.  Given an instance type and
+    # OS we will grab data from a period specified, default is from two weeks to now,
+    # and calculate recommendations for the AZs in the current region
+    # @param instance_type [String] Insrance type to get bid for
+    # @param os [String] OS you whish to run, default linux
+    # @param num_hours [Integer] How many hours to look back, default two weeks
+    # @return [Hash] Reccomendations by region, empty if no viable recommendations
+    def best_bid_price(instance_type, os = DEFAULT_OS, num_hours = TWO_WEEKS)
+      price_history_by_az = {}
+      recommendations = {}
+
+      options = {
+        end_time: Time.now.utc,
+        instance_types: [
+          instance_type
+        ],
+        product_descriptions: [
+          os
+        ],
+        start_time: (Time.now - num_hours * 60).utc
+      }
+
+      loop do
+        price_history = @ec2.describe_spot_price_history(options)
+        price_history.spot_price_history.each do |price|
+          price_history_by_az[price.availability_zone] = [] unless price_history_by_az[price.availability_zone]
+          price_history_by_az[price.availability_zone].push(price.spot_price.to_f)
+        end
+
+        break if price_history.next_token.nil? || price_history.next_token.empty?
+        options[:next_token] = price_history.next_token
+      end
+
+      price_history_by_az.each do |key, data|
+        stats = data.descriptive_statistics
+        next unless stats[:number] > 30
+        confidence_interval = Cucloud::Utilities.confidence_interval_99(
+          stats[:mean],
+          stats[:standard_deviation],
+          stats[:number]
+        )
+        recommendations[key] = confidence_interval[1]
+      end
+
+      recommendations
+    end
+
+    # Make spot instance request
+    # @param options [Hash] Options to provide to the API
+    # see http://docs.aws.amazon.com/sdkforruby/api/Aws/EC2/Client.html#request_spot_instances-instance_method
+    # @return [Hash] Description of the spot request
+    def make_spot_instance_request(options)
+      spot_requests = @ec2.request_spot_instances(options)
+      request_ids = [spot_requests.spot_instance_requests[0].spot_instance_request_id]
+
+      @ec2.wait_until(:spot_instance_request_fulfilled, spot_instance_request_ids: request_ids)
+      @ec2.describe_spot_instance_requests(spot_instance_request_ids: request_ids)
     end
   end
 end

@@ -412,6 +412,88 @@ describe Cucloud::Ec2Utils do
       expect(ec_util.get_instance_name('i-2')).to be_nil
     end
 
+    describe 'make_spot_instance_request' do
+      it 'should make a spot instnace request' do
+        ec2_client.stub_responses(
+          :describe_spot_instance_requests,
+          spot_instance_requests: [{
+            status: {
+              code: 'fulfilled'
+            }
+          }]
+        )
+
+        ec2_client.stub_responses(
+          :request_spot_instances,
+          spot_instance_requests: [{
+            spot_instance_request_id: 'sir-1212121'
+          }]
+        )
+
+        options = {
+          instance_count: 1,
+          launch_specification: {
+
+            image_id: 'ami-275ffe31',
+            instance_type: 'm3.medium'
+          },
+          spot_price: '0.016',
+          type: 'one-time'
+        }
+
+        expect { ec_util.make_spot_instance_request(options) }.not_to raise_error
+      end
+    end
+
+    describe 'best_bid_price' do
+      it 'should return a list of bid recommendations' do
+        ec2_client.stub_responses(
+          :describe_spot_price_history,
+          JSON.parse(File.read(File.join(File.dirname(__FILE__), '/fixtures/bid_history.json')), symbolize_names: true)
+        )
+
+        bid_prices = ec_util.best_bid_price('m3.medium')
+        expect(bid_prices).to match_array([
+                                            ['us-west-1a', 0.08244842404174188],
+                                            ['us-west-1c', 0.07917263606261282]
+                                          ])
+      end
+
+      it 'should return a list of bid recommendations (paginate)' do
+        ec2_client.stub_responses(
+          :describe_spot_price_history,
+          [
+            {
+              next_token: '1123123',
+              spot_price_history: [
+                {
+                  availability_zone: 'us-west-1a',
+                  instance_type: 'm3.medium',
+                  product_description: 'Linux/UNIX (Amazon VPC)',
+                  spot_price: '0.080000',
+                  timestamp: Time.parse('2014-01-06T04:32:53.000Z')
+                }
+              ]
+            },
+            {
+              next_token: '',
+              spot_price_history: [
+                {
+                  availability_zone: 'us-west-1a',
+                  instance_type: 'm3.medium',
+                  product_description: 'Linux/UNIX (Amazon VPC)',
+                  spot_price: '0.080000',
+                  timestamp: Time.parse('2014-01-06T04:32:53.000Z')
+                }
+              ]
+            }
+          ]
+        )
+
+        expect { ec_util.best_bid_price('m3.medium') }.not_to raise_error
+      end
+    end
+
     describe '#instances_to_patch_by_tag' do
       it 'should run without an error with no valid targets' do
         expect { ec_util.instances_to_patch_by_tag }.not_to raise_error
