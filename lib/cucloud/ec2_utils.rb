@@ -265,7 +265,7 @@ module Cucloud
     # @param os [String] OS you whish to run, default linux
     # @param num_hours [Integer] How many hours to look back, default two weeks
     # @return [Hash] Reccomendations by region, empty if no viable recommendations
-    def best_bid_price(instance_type, os = DEFAULT_OS, num_hours = TWO_WEEKS)
+    def best_spot_bid_price(instance_type, os = DEFAULT_OS, num_hours = TWO_WEEKS)
       price_history_by_az = {}
       recommendations = {}
 

@@ -445,14 +445,14 @@ describe Cucloud::Ec2Utils do
       end
     end
 
-    describe 'best_bid_price' do
+    describe 'best_spot_bid_price' do
       it 'should return a list of bid recommendations' do
         ec2_client.stub_responses(
           :describe_spot_price_history,
           JSON.parse(File.read(File.join(File.dirname(__FILE__), '/fixtures/bid_history.json')), symbolize_names: true)
         )
 
-        bid_prices = ec_util.best_bid_price('m3.medium')
+        bid_prices = ec_util.best_spot_bid_price('m3.medium')
         expect(bid_prices).to match_array([
                                             ['us-west-1a', 0.08244842404174188],
                                             ['us-west-1c', 0.07917263606261282]
@@ -490,7 +490,7 @@ describe Cucloud::Ec2Utils do
           ]
         )
 
-        expect { ec_util.best_bid_price('m3.medium') }.not_to raise_error
+        expect { ec_util.best_spot_bid_price('m3.medium') }.not_to raise_error
       end
     end
 

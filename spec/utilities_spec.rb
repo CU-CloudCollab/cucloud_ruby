@@ -25,7 +25,12 @@ describe Cucloud::Utilities do
         stats[:number]
       )
 
-      expect(confidence_interval.map!(&:round)).to eq([36, 74])
+      expect(confidence_interval).to eq(
+        [
+          36.23442868797578,
+          73.76557131202422
+        ]
+      )
     end
   end
 end
