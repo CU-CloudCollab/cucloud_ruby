@@ -86,8 +86,9 @@ module Cucloud
       @rds.wait_until(:db_instance_available, db_instance_identifier: db_instance_identifier)
     end
 
-    # Delete a givne db instance
+    # Find the latest snapshot for a given RDS instance
     # @param db_instance_identifier [String] RDS instance identifier
+    # @param snapshot_type [String] One of the following types public, shared, manual or automated
     # @return [String] Most recent snapshot ID for given RDS instance
     def find_latest_snapshot(db_instance_identifier, snapshot_type = 'manual')
       latest_snapshot_time = Time.new(2002)
@@ -168,6 +169,26 @@ module Cucloud
       return nil unless pending_snapshots(rds_instance).empty?
       snap = start_snapshot(rds_instance, tags)
       wait_until_snapshot_available(snap, nil, 10)
+    end
+
+    # Find RDS Snapshot older than supplied days
+    # @param db_instance_identifier [String] RDS instance identifier
+    # @param snapshot_type [String] One of the following types public, shared, manual or automated
+    # @return [String] Most recent snapshot ID for given RDS instance
+    def find_db_snapshots_older_than(days_old, snapshot_type = 'manual')
+      found_snap_shots = []
+
+      snapshots_info = @rds.describe_db_snapshots(snapshot_type: snapshot_type)[:db_snapshots]
+
+      snapshots_info.each do |snapshot_info|
+        next if snapshot_info[:status] != 'available'
+
+        snapshot_days_old = (Time.now.to_i - snapshot_info[:snapshot_create_time].to_i) / Cucloud::SECONDS_IN_A_DAY
+        if snapshot_days_old > days_old
+          found_snap_shots.push(snapshot_info[:db_snapshot_identifier])
+        end
+      end
+      found_snap_shots
     end
 
     private

@@ -5,8 +5,6 @@ module Cucloud
     UBUNTU_PATCH_COMMAND = 'apt-get update; apt-get -y upgrade; reboot'.freeze
     # This is the command sent to amazon linux machines for patching
     AMAZON_PATCH_COMMAND = 'yum update -y; reboot & disown '.freeze
-    # Used in time calculations
-    SECONDS_IN_A_DAY = 86_400
     # Max attemps for a waiter to try
     WAITER_MAX_ATTEMPS = 240
     # Delay between calls used by waiter to check status
@@ -229,7 +227,7 @@ module Cucloud
 
       snapshots = @ec2.describe_snapshots(owner_ids: ['self'], filters: [{ name: 'status', values: ['completed'] }])
       snapshots.snapshots.each do |snapshot|
-        if snapshot.start_time > Time.now - (SECONDS_IN_A_DAY * days)
+        if snapshot.start_time > Time.now - (Cucloud::SECONDS_IN_A_DAY * days)
           volumes_backed_up_recently[snapshot.volume_id.to_s] = true
         end
       end
@@ -246,7 +244,7 @@ module Cucloud
 
       snapshots.snapshots.each do |snapshot|
         if !days_old.nil?
-          snapshot_days_old = (Time.now.to_i - snapshot.start_time.to_i) / SECONDS_IN_A_DAY
+          snapshot_days_old = (Time.now.to_i - snapshot.start_time.to_i) / Cucloud::SECONDS_IN_A_DAY
 
           if snapshot_days_old > days_old
             found_snapshots.push(snapshot.snapshot_id)

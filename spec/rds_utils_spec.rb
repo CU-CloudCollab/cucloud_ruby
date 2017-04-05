@@ -201,6 +201,12 @@ describe Cucloud::RdsUtils do
         expect(rds_utils.find_latest_snapshot(db_instance.id)).to eq 'snap2'
       end
     end
+
+    describe '#find_db_snapshots_older_than' do
+      it 'should return a snapshot identifier' do
+        expect(rds_utils.find_db_snapshots_older_than(db_instance.id)).to match_array([])
+      end
+    end
   end
 
   context 'while describe_db_instances is mocked with a response' do
