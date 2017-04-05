@@ -182,7 +182,7 @@ describe Cucloud::RdsUtils do
         :describe_db_snapshots,
         db_snapshots: [
           mock_snapshot,
-          mock_snapshot.merge(db_snapshot_identifier: 'snap2', snapshot_create_time: Time.new(2008))
+          mock_snapshot.merge(db_snapshot_identifier: 'snap2', snapshot_create_time: Time.now)
         ]
       )
       rds_client.stub_responses(
@@ -204,7 +204,7 @@ describe Cucloud::RdsUtils do
 
     describe '#find_db_snapshots_older_than' do
       it 'should return a snapshot identifier' do
-        expect(rds_utils.find_db_snapshots_older_than(db_instance.id)).to match_array([])
+        expect(rds_utils.find_db_snapshots_older_than(15)).to match_array('snap1')
       end
     end
   end
@@ -281,6 +281,12 @@ describe Cucloud::RdsUtils do
         describe '#find_latest_snapshot' do
           it 'should return a nil since there are no available snapshots' do
             expect(rds_utils.find_latest_snapshot(db_instance.id)).to be_nil
+          end
+        end
+
+        describe '#find_db_snapshots_older_than' do
+          it 'should return a nil since there are no available snapshots' do
+            expect(rds_utils.find_db_snapshots_older_than(18)).to be_empty
           end
         end
       end
