@@ -202,9 +202,12 @@ describe Cucloud::RdsUtils do
       end
     end
 
-    describe '#find_db_snapshots_older_than' do
-      it 'should return a snapshot identifier' do
-        expect(rds_utils.find_db_snapshots_older_than(15)).to match_array('snap1')
+    describe '#find_rds_snapshots' do
+      it 'should find snapshots that are older than 15 days' do
+        expect(rds_utils.find_rds_snapshots(days_old: 15)).to match_array('snap1')
+      end
+      it 'should find all snapshots ' do
+        expect(rds_utils.find_rds_snapshots).to match_array(%w(snap1 snap2))
       end
     end
   end
@@ -284,9 +287,9 @@ describe Cucloud::RdsUtils do
           end
         end
 
-        describe '#find_db_snapshots_older_than' do
-          it 'should return a nil since there are no available snapshots' do
-            expect(rds_utils.find_db_snapshots_older_than(18)).to be_empty
+        describe '#find_rds_snapshots' do
+          it 'should return an empty list as there are no available snapshots' do
+            expect(rds_utils.find_rds_snapshots(days_old: 18)).to be_empty
           end
         end
       end
