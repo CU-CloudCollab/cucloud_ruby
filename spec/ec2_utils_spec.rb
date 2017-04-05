@@ -41,12 +41,12 @@ describe Cucloud::Ec2Utils do
         :describe_snapshots,
         snapshots: [
           { snapshot_id: 'snap-abc',
-            start_time: Time.now - (Cucloud::Ec2Utils::SECONDS_IN_A_DAY * 4),
+            start_time: Time.now - (Cucloud::SECONDS_IN_A_DAY * 4),
             state: 'completed',
             owner_id: '123456789012',
             volume_id: 'vol-abc' },
           { snapshot_id: 'snap-def',
-            start_time: Time.now - (Cucloud::Ec2Utils::SECONDS_IN_A_DAY * 10),
+            start_time: Time.now - (Cucloud::SECONDS_IN_A_DAY * 10),
             state: 'completed',
             owner_id: '123456789012',
             volume_id: 'vol-def' }

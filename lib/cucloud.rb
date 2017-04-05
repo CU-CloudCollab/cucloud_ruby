@@ -20,6 +20,8 @@ module Cucloud
 
   # This is the default region API calls are made against
   DEFAULT_REGION = 'us-east-1'.freeze
+  # Used in time calculations
+  SECONDS_IN_A_DAY = 86_400
 
   Aws.config = { region: DEFAULT_REGION }
 
