@@ -171,6 +171,7 @@ module Cucloud
 
     # Given an IAM credential rotate it
     # @param creds_to_rotate [Hash<string>] IAM access_key_id and and secret_access_key to rotate
+    # @param time_to_wait_for_new_cred [Integer] How many seconds to wait for new key to become active
     # @return [Hash<string>] new IAM access_key_id and and secret_access_key
     def rotate_iam_credntial(creds_to_rotate, time_to_wait_for_new_cred = 15)
       # Update AWS config to used the creddentials passed in
