@@ -172,36 +172,29 @@ module Cucloud
     # Given an IAM credential rotate it
     # @param creds_to_rotate [Hash<string>] IAM access_key_id and and secret_access_key to rotate
     # @return [Hash<string>] new IAM access_key_id and and secret_access_key
-    def rotate_iam_credntial(creds_to_rotate)
-      # create the iam client and get the last time the key was used
-      iam = Aws::IAM::Client.new(
-        region: region_name,
-        credentials: Aws::Credentials.new(creds_to_rotate['aws_access_key_id'],
-                                          creds_to_rotate['aws_secret_access_key'])
-      )
-
+    def rotate_iam_credntial(creds_to_rotate, time_to_wait_for_new_cred = 15)
+      # Update AWS config to used the creddentials passed in
+      Aws.config.update(credentials: Aws::Credentials.new(creds_to_rotate[:aws_access_key_id],
+                                                          creds_to_rotate[:aws_secret_access_key]))
       # now grab the user name form the response
-      resp = iam.get_access_key_last_used(access_key_id: creds_to_rotate['aws_access_key_id'])
+      resp = @iam.get_access_key_last_used(access_key_id: creds_to_rotate[:aws_access_key_id])
       user = resp.user_name
 
       # create and store new keys
-      resp = iam.create_access_key(user_name: user)
+      resp = @iam.create_access_key(user_name: user)
       new_access_key_id = resp.access_key.access_key_id
       new_secret_access_key = resp.access_key.secret_access_key
 
       # give time for the new credentials to become active
-      sleep 15
+      sleep time_to_wait_for_new_cred
 
       # use new credentials
-      iam = Aws::IAM::Client.new(
-        region: region_name,
-        credentials: Aws::Credentials.new(new_access_key_id,
-                                          new_secret_access_key)
-      )
+      Aws.config.update(credentials: Aws::Credentials.new(new_access_key_id,
+                                                          new_secret_access_key))
 
       # Delete the old keys with the new key
-      iam.delete_access_key(user_name: user,
-                            access_key_id: creds_to_rotate['aws_access_key_id'])
+      @iam.delete_access_key(user_name: user,
+                             access_key_id: creds_to_rotate[:aws_access_key_id])
 
       { aws_access_key_id: new_access_key_id, aws_secret_access_key: new_secret_access_key }
     end
