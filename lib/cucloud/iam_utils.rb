@@ -169,7 +169,8 @@ module Cucloud
       cert.server_certificate.server_certificate_metadata.arn
     end
 
-    # Given an IAM credential rotate it
+    # Given an IAM credential rotate it.  This functions assumes that one of the two access key
+    # slots is available.  If ther is not an available slot an exception will be raised.
     # @param creds_to_rotate [Hash<string>] IAM access_key_id and and secret_access_key to rotate
     # @param time_to_wait_for_new_cred [Integer] How many seconds to wait for new key to become active
     # @return [Hash<string>] new IAM access_key_id and and secret_access_key
