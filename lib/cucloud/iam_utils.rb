@@ -168,5 +168,37 @@ module Cucloud
       cert = @iam.get_server_certificate(server_certificate_name: cert_name)
       cert.server_certificate.server_certificate_metadata.arn
     end
+
+    # Given an IAM credential rotate it.  This functions assumes that one of the two access key
+    # slots is available.  If ther is not an available slot an exception will be raised.
+    # @param creds_to_rotate [Hash<string>] IAM access_key_id and and secret_access_key to rotate
+    # @param time_to_wait_for_new_cred [Integer] How many seconds to wait for new key to become active
+    # @return [Hash<string>] new IAM access_key_id and and secret_access_key
+    def rotate_iam_credntial(creds_to_rotate, time_to_wait_for_new_cred = 15)
+      # Update AWS config to used the creddentials passed in
+      Aws.config.update(credentials: Aws::Credentials.new(creds_to_rotate[:aws_access_key_id],
+                                                          creds_to_rotate[:aws_secret_access_key]))
+      # now grab the user name form the response
+      resp = @iam.get_access_key_last_used(access_key_id: creds_to_rotate[:aws_access_key_id])
+      user = resp.user_name
+
+      # create and store new keys
+      resp = @iam.create_access_key(user_name: user)
+      new_access_key_id = resp.access_key.access_key_id
+      new_secret_access_key = resp.access_key.secret_access_key
+
+      # give time for the new credentials to become active
+      sleep time_to_wait_for_new_cred
+
+      # use new credentials
+      Aws.config.update(credentials: Aws::Credentials.new(new_access_key_id,
+                                                          new_secret_access_key))
+
+      # Delete the old keys with the new key
+      @iam.delete_access_key(user_name: user,
+                             access_key_id: creds_to_rotate[:aws_access_key_id])
+
+      { aws_access_key_id: new_access_key_id, aws_secret_access_key: new_secret_access_key }
+    end
   end
 end

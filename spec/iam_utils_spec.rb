@@ -18,6 +18,45 @@ describe Cucloud::IamUtils do
     expect(Cucloud::IamUtils.new(iam_client)).to be_a_kind_of(Cucloud::IamUtils)
   end
 
+  context 'While IAM get_access_key_last_used is stubbed out' do
+    before do
+      iam_client.stub_responses(
+        :get_access_key_last_used,
+        user_name: 'srb55'
+      )
+
+      iam_client.stub_responses(
+        :create_access_key,
+        access_key: {
+          access_key_id: 'AK49AK49AK49AK49',
+          secret_access_key: 'AK49SECRETSSHHHHH',
+          user_name: 'srb55',
+          status: 'Active'
+        }
+      )
+
+      iam_client.stub_responses(
+        :delete_access_key,
+        {}
+      )
+    end
+
+    it 'should not raise an exception' do
+      creds_to_rotate = {
+        aws_access_key_id: 'AK47AK47AK47AK47',
+        aws_secret_access_key: 'AK47SECRETSSHHHHH'
+      }
+
+      new_keys = {
+        aws_access_key_id: 'AK49AK49AK49AK49',
+        aws_secret_access_key: 'AK49SECRETSSHHHHH'
+      }
+
+      expect { iam_util.rotate_iam_credntial(creds_to_rotate, 1) }.not_to raise_error
+      expect(iam_util.rotate_iam_credntial(creds_to_rotate, 1)).to eq(new_keys)
+    end
+  end
+
   context 'while IAM list_account_aliases is stubbed with aliased account' do
     before do
       iam_client.stub_responses(
