@@ -22,3 +22,6 @@ Style/AccessorMethodName:
 
 Metrics/ClassLength:
   Max: 200
+
+Metrics/BlockLength:
+  Enabled: false

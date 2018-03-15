@@ -33,7 +33,7 @@ describe Cucloud::KmsUtils do
       { key1: 'value1' },
       { 'key1' => 'value1' },
       { 'key1_decrypted' => 'value1' },
-      { 'key1' => %w('value1 value2') },
+      { 'key1' => %w['value1 value2'] },
       { 'level1' => { 'key1' => 'value1' } },
       { 'level1' => { 'level2' => { 'key1' => 'value1' } } },
       { 'level1' => { 'level2' => { 'level3' => { 'key1' => 'value1' } } } },
@@ -47,8 +47,8 @@ describe Cucloud::KmsUtils do
                       'level2' => { 'key9' => 'value9',
                                     'level3' => { 'key1' => 'value1' } } } },
       ['value1'],
-      %w('value1 value2'),
-      ['value1', %w('value2 value3')],
+      %w['value1 value2'],
+      ['value1', %w['value2 value3']],
       [{ 'key1' => 'value1' }],
       [{ 'key1' => 'value1' }, { 'key2' => 'value2' }]
     ]

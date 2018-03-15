@@ -29,10 +29,10 @@ describe Cucloud::EcsUtils do
               cpu: 10,
               memory: 30,
               memory_reservation: 30,
-              links: %w(
+              links: %w[
                 link1
                 link2
-              ),
+              ],
               port_mappings: [
                 {
                   container_port: 80,
@@ -41,10 +41,10 @@ describe Cucloud::EcsUtils do
                 }
               ],
               essential: true,
-              entry_point: %w(
+              entry_point: %w[
                 entry_point_1
                 entry_point_2
-              ),
+              ],
               command: [
                 'command 1',
                 'command 2'
@@ -159,10 +159,10 @@ describe Cucloud::EcsUtils do
               cpu: 10,
               memory: 30,
               memory_reservation: 30,
-              links: %w(
+              links: %w[
                 link1
                 link2
-              ),
+              ],
               port_mappings: [
                 {
                   container_port: 80,
@@ -171,10 +171,10 @@ describe Cucloud::EcsUtils do
                 }
               ],
               essential: true,
-              entry_point: %w(
+              entry_point: %w[
                 entry_point_1
                 entry_point_2
-              ),
+              ],
               command: [
                 'command 1',
                 'command 2'

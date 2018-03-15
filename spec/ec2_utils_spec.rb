@@ -161,7 +161,7 @@ describe Cucloud::Ec2Utils do
             ] }
         ]
       )
-      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5, %w(Tag1 Tag3))
+      snapshots_created = ec_util.backup_volumes_unless_recent_backup(5, %w[Tag1 Tag3])
       expect(snapshots_created).to match_array(
         [
           {
@@ -211,7 +211,7 @@ describe Cucloud::Ec2Utils do
         ]
       )
       snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
-                                                                      %w(Tag1 Tag3),
+                                                                      %w[Tag1 Tag3],
                                                                       [
                                                                         { key: 'MyTag1', value: 'value-1' },
                                                                         { key: 'MyTag2', value: 'value-2' }
@@ -269,7 +269,7 @@ describe Cucloud::Ec2Utils do
         ]
       )
       snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
-                                                                      %w(Tag1 Tag3),
+                                                                      %w[Tag1 Tag3],
                                                                       [
                                                                         { key: 'MyTag1', value: 'value-1' },
                                                                         { key: 'MyTag2', value: 'value-2' },
@@ -320,7 +320,7 @@ describe Cucloud::Ec2Utils do
         ]
       )
       snapshots_created = ec_util.backup_volumes_unless_recent_backup(5,
-                                                                      %w(),
+                                                                      %w[],
                                                                       [
                                                                         { key: 'Instance Name',
                                                                           value: 'NOT-example-1' }

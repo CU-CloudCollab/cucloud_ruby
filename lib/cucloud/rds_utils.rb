@@ -32,18 +32,21 @@ module Cucloud
     # @param db_instance_identifier [String] RDS instance identifier
     # @param db_snapshot_identifier [String] Name for final snapshot, default is nil
     def delete_db_instance(db_instance_identifier, db_snapshot_identifier = nil)
-      if does_db_exist?(db_instance_identifier)
-        if db_snapshot_identifier.nil?
-          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, skip_final_snapshot: true)
-        else
-          @rds.delete_db_instance(db_instance_identifier: db_instance_identifier,
-                                  final_db_snapshot_identifier: db_snapshot_identifier)
-        end
-
-        @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
-      else
-        raise Aws::RDS::Errors::DBInstanceNotFound.new(db_instance_identifier, '')
+      unless does_db_exist?(db_instance_identifier)
+        raise Aws::RDS::Errors::DBInstanceNotFound.new(
+          db_instance_identifier,
+          ''
+        )
       end
+
+      if db_snapshot_identifier.nil?
+        @rds.delete_db_instance(db_instance_identifier: db_instance_identifier, skip_final_snapshot: true)
+      else
+        @rds.delete_db_instance(db_instance_identifier: db_instance_identifier,
+                                final_db_snapshot_identifier: db_snapshot_identifier)
+      end
+
+      @rds.wait_until(:db_instance_deleted, db_instance_identifier: db_instance_identifier)
     end
 
     # Modify the security groups for a RDS instance
