@@ -24,7 +24,7 @@ Gem::Specification.new do |spec|
   spec.executables   = spec.files.grep(%r{^exe/}) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'aws-sdk', '~> 2'
+  spec.add_dependency 'aws-sdk', '~> 3'
   spec.add_dependency 'uuid', '~> 2.3'
   spec.add_dependency 'descriptive_statistics', '~> 2.5'
 
@@ -32,6 +32,6 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'coveralls'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'
-  spec.add_development_dependency 'rubocop', '~> 0.40.0'
+  spec.add_development_dependency 'rubocop', '~> 0.49.0'
   spec.add_development_dependency 'yard', '~> 0.9.0'
 end
