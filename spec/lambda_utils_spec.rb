@@ -56,7 +56,7 @@ describe Cucloud::LambdaUtils do
       it 'should return without an error' do
         versions = lambda_utils.get_all_versions_for_function('Lambda-Dev')
         expect(versions.length).to be 3
-        expect(%w(1 2 3) - versions).to be_empty
+        expect(%w[1 2 3] - versions).to be_empty
       end
     end
   end
@@ -75,7 +75,7 @@ describe Cucloud::LambdaUtils do
       it 'should return without an error' do
         functions = lambda_utils.get_all_function_names_for_account_region
         expect(functions.length).to be 3
-        expect(%w(A B C) - functions).to be_empty
+        expect(%w[A B C] - functions).to be_empty
       end
     end
   end

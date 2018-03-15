@@ -49,10 +49,6 @@ module Cucloud
       @ec2.start_instances(instance_ids: [instance])
     end
 
-    # Set the name of the instance that will be displayed in the ec2 console
-    def rename_instance(instance, name)
-    end
-
     # reboot instance
     def reboot_instance(instance)
       i = get_instance(instance)
@@ -63,27 +59,6 @@ module Cucloud
     def terminate_instance(instance)
       i = get_instance(instance)
       i.terminate
-    end
-
-    # Assoications an Elastic IP adress with a specific instance number.
-    # @return association_id as a string in the form of eipassoc-569cd631.
-    #  This is the link between between the
-    #  elastic network interface and the elastic IP address.
-    def associate_eip(instance, allocation_id)
-    end
-
-    # Create ec2 instance based on parameters provided. The function will pull
-    #   in default information from ?????.
-    # @param options [hash] will be hash that will override the default
-    def create_instance(options)
-    end
-
-    # Remove private AMI
-    def deregister_image(image)
-    end
-
-    # Find ami based on a search of Name
-    def find_ami(name)
     end
 
     # Based on tag name and value, return instances
@@ -201,7 +176,7 @@ module Cucloud
           tags << { key: 'Instance Name', value: instance_name }
         end
         volume.tags.each do |tag|
-          if preserve_volume_tags.include?(tag.key) && !tags.any? { |tagitem| tagitem[:key] == tag.key }
+          if preserve_volume_tags.include?(tag.key) && tags.none? { |tagitem| tagitem[:key] == tag.key }
             tags << tag
           end
         end

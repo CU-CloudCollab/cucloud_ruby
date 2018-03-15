@@ -37,7 +37,7 @@ module Cucloud
 
       response = @cfn.send(action, stack_name: stack_name,
                                    template_body: template,
-                                   capabilities: %w(CAPABILITY_IAM CAPABILITY_NAMED_IAM))
+                                   capabilities: %w[CAPABILITY_IAM CAPABILITY_NAMED_IAM])
 
       raise UnknownServiceError unless response.successful?
 

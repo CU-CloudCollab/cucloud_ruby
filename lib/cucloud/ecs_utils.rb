@@ -47,8 +47,9 @@ module Cucloud
     # @return [Hash] An options hash that can be submitted via AWS sdk
     def generate_td_options_hash(task_definition)
       # make sure we got a valid launch config
-      raise InvalidTaskDefinitionError.new,
-            'Provided task definition is not valid' unless task_definition.is_a? Aws::ECS::Types::TaskDefinition
+      unless task_definition.is_a? Aws::ECS::Types::TaskDefinition
+        raise InvalidTaskDefinitionError.new, 'Provided task definition is not valid'
+      end
 
       # convert to hash (required for aws sdk) and update necessary values
       options_hash = task_definition.to_h

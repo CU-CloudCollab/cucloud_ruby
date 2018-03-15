@@ -207,7 +207,7 @@ describe Cucloud::RdsUtils do
         expect(rds_utils.find_rds_snapshots(days_old: 15)).to match_array('snap1')
       end
       it 'should find all snapshots ' do
-        expect(rds_utils.find_rds_snapshots).to match_array(%w(snap1 snap2))
+        expect(rds_utils.find_rds_snapshots).to match_array(%w[snap1 snap2])
       end
     end
   end
